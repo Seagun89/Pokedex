@@ -1,0 +1,18 @@
+#.NET API
+bin/
+obj/
+*.user
+*.vs
+*.exe
+*.dll
+
+#Node/Angular
+node_modules/
+.angular/
+
+#VSCode
+.vscode/
+
+#OS files
+.DS_Store
+Thumbs.db
