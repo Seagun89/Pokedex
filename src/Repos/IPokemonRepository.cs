@@ -1,12 +1,13 @@
 using API.Models;
 using API.Dtos;
+using API.HelperObjects;
 
 namespace API.Repos
 {
     public interface IPokemonRepository
     {
         public Task<Pokemon> GetPokemonAsync(int id);
-        public Task<List<PokemonResponseDto>> GetAllPokemonAsync();
+        public Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query);
         public Task AddPokemonAsync(PokemonRequestDto pokemon);
         public Task DeletePokemonAsync(Pokemon pokemon);
         public Task<bool> PokemonExistsAsync(string name);

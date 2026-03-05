@@ -1,6 +1,7 @@
 using API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using API.Services;
+using API.HelperObjects;
 
 namespace API.Controllers
 {
@@ -15,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet("PokeDex/All")]
-        public async Task<IActionResult> GetAllPokemonAsync()
+        public async Task<IActionResult> GetAllPokemonAsync([FromQuery] QueryPokemonRequest query) // Adding filtering for GetAllPokemon endpoint, allows clients to filter pokemon by using query parameters
         {
-            var pokemonList = await _pokemonService.GetAllPokemonAsync();
+            var pokemonList = await _pokemonService.GetAllPokemonAsync(query);
             return Ok(pokemonList);
         }
 

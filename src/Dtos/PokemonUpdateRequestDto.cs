@@ -1,4 +1,3 @@
-using API.Models;
 using System.ComponentModel.DataAnnotations;
 namespace API.Dtos
 {
@@ -16,6 +15,6 @@ namespace API.Dtos
         [Required]
         public string? AbilityType { get; set; }
         [Required]
-        public List<Ability> Abilities { get; set; } = new List<Ability>();
+        public List<AbilityRequestDto> Abilities { get; set; } = new List<AbilityRequestDto>();
     }
 }

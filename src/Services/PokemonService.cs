@@ -2,6 +2,7 @@ using API.Mappers;
 using API.Dtos;
 using API.Repos;
 using API.Models;
+using API.HelperObjects;
 
 namespace API.Services
 {
@@ -39,9 +40,9 @@ namespace API.Services
             await _pokemonRepository.SaveChangesAsync();
         }
 
-        public async Task<List<PokemonResponseDto>> GetAllPokemonAsync()
+        public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
-            return await _pokemonRepository.GetAllPokemonAsync();
+            return await _pokemonRepository.GetAllPokemonAsync(query);
         }
 
         public async Task<PokemonResponseDto> GetPokemonByIdAsync(int id)
@@ -57,12 +58,12 @@ namespace API.Services
             if (id <= 0) throw new ArgumentOutOfRangeException($"{id} is not a valid id. Id must be greater than 0.");
 
             var pokemon = await GetPokemonOrThrowAsync(id);
-            pokemon.Name = UpdateRequest.Name;
+            pokemon.Name = UpdateRequest.Name ?? pokemon.Name;
             pokemon.Height = UpdateRequest.Height;
             pokemon.Weight = UpdateRequest.Weight;
             pokemon.Abilities.ForEach(a =>
             {
-                var updatedAbility = UpdateRequest.Abilities.First(ua => ua.Id == a.Id);
+                var updatedAbility = UpdateRequest.Abilities.First(ua => ua.Name == a.Name);
                 a.Name = updatedAbility.Name ?? a.Name;
                 a.Description = updatedAbility.Description ?? a.Description;
                 a.AbilityType = updatedAbility.AbilityType ?? a.AbilityType;

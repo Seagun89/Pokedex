@@ -3,10 +3,11 @@ using API.Models;
 using API.Dtos;
 using API.Mappers;
 using Microsoft.EntityFrameworkCore;
+using API.HelperObjects;
 
 namespace API.Repos
 {
-    public class PokemonRepository : IPokemonRepository // handles database interactions for  pokemoncontroller
+    public class PokemonRepository : IPokemonRepository // handles database interactions for pokemoncontroller
     {
         private readonly PokemonDBContext _context;
 
@@ -15,14 +16,35 @@ namespace API.Repos
             _context = context;
         }
 
-        public async Task<List<PokemonResponseDto>> GetAllPokemonAsync()
+        public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
-            var pokemonList = await _context.Pokemon
+            var pokemon = _context.Pokemon
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
-            .Select(p => p.MapToPokemonResponseDto())
-            .ToListAsync();
+            .AsQueryable(); // primes query for filtering based on query parameters
 
-            return pokemonList;
+            // Adding Filtering based on query parameters, allows clients to filter pokemon by using query parameters
+            //TODO: Turn if statements into helper method
+            if (!string.IsNullOrWhiteSpace(query.AbilityType))
+            {
+                pokemon = pokemon.Where(p => p.AbilityType.Contains(query.AbilityType));
+            }
+            if (query.Height.HasValue)
+            {
+                pokemon = pokemon.Where(p => p.Height == query.Height.Value);
+            }
+            if (query.ability != null)
+            {
+                if (!string.IsNullOrWhiteSpace(query.ability.AbilityType))
+                {
+                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.AbilityType == query.ability.AbilityType));
+                }
+                if (query.ability.Damage.HasValue)
+                {
+                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.Damage == query.ability.Damage.Value));
+                }
+            }
+
+            return await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
         }
 
         public async Task<Pokemon> GetPokemonAsync(int id)
@@ -45,7 +67,8 @@ namespace API.Repos
             _context.Pokemon.Remove(pokemon);
             await SaveChangesAsync();
         }
-        // Helper methods
+        
+#region Helper methods
         public async Task<bool> PokemonExistsAsync(string name)
         {
             return await _context.Pokemon.Where(p => p.Name == name).AnyAsync();
@@ -55,5 +78,7 @@ namespace API.Repos
         {
             await _context.SaveChangesAsync();
         }
+#endregion Helper methods
+        
     }
 }
