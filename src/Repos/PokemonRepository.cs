@@ -23,28 +23,7 @@ namespace API.Repos
             .AsQueryable(); // primes query for filtering based on query parameters
 
             // Adding Filtering based on query parameters, allows clients to filter pokemon by using query parameters
-            //TODO: Turn if statements into helper method
-            if (!string.IsNullOrWhiteSpace(query.AbilityType))
-            {
-                pokemon = pokemon.Where(p => p.AbilityType.Contains(query.AbilityType));
-            }
-            if (query.Height.HasValue)
-            {
-                pokemon = pokemon.Where(p => p.Height == query.Height.Value);
-            }
-            if (query.ability != null)
-            {
-                if (!string.IsNullOrWhiteSpace(query.ability.AbilityType))
-                {
-                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.AbilityType == query.ability.AbilityType));
-                }
-                if (query.ability.Damage.HasValue)
-                {
-                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.Damage == query.ability.Damage.Value));
-                }
-            }
-
-            return await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
+            return await FilterPokemonAsync(pokemon, query);
         }
 
         public async Task<Pokemon> GetPokemonAsync(int id)
@@ -78,7 +57,50 @@ namespace API.Repos
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<PokemonResponseDto>> FilterPokemonAsync(IQueryable<Pokemon> pokemon, QueryPokemonRequest query)
+        {
+            //TODO: Turn if statements into helper method
+            if (!string.IsNullOrWhiteSpace(query.AbilityType))
+            {
+                pokemon = pokemon.Where(p => p.AbilityType.Contains(query.AbilityType));
+            }
+            if (query.Height.HasValue)
+            {
+                pokemon = pokemon.Where(p => p.Height == query.Height.Value);
+            }
+            if (query.Ability != null)
+            {
+                if (!string.IsNullOrWhiteSpace(query.Ability.AbilityType))
+                {
+                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.AbilityType == query.Ability.AbilityType));
+                }
+                if (query.Ability.Damage.HasValue)
+                {
+                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.Damage == query.Ability.Damage.Value));
+                }
+                if (!string.IsNullOrWhiteSpace(query.Ability.Name))
+                {
+                    pokemon = pokemon.Where(p => p.Abilities.Any(a => a.Name == query.Ability.Name));
+                }
+            }
+            if (!string.IsNullOrEmpty(query.SortBy)) // Adding sorting based on query parameters, allows clients to sort pokemon by using query parameters
+            {
+                if (query.SortBy.Contains("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    pokemon = query.IsDescending ? pokemon = pokemon.OrderByDescending(p => p.Name) : pokemon.OrderBy(p => p.Name);
+                }    
+                else if (query.SortBy.Contains("AbilityType", StringComparison.OrdinalIgnoreCase))
+                {
+                    pokemon = query.IsDescending ? pokemon = pokemon.OrderByDescending(p => p.AbilityType) : pokemon.OrderBy(p => p.AbilityType);
+                }
+            }
+
+            // Adding pagination based on query parameters for GetAllPokemon endpoint, allows clients to paginate pokemon by using query parameters
+            pokemon = pokemon.Skip((query.PageNumber.GetValueOrDefault() - 1) * query.PageSize.GetValueOrDefault()).Take(query.PageSize.GetValueOrDefault());
+
+            return await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
+        }
 #endregion Helper methods
-        
     }
 }
