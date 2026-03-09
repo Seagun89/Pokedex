@@ -96,7 +96,7 @@ namespace API.Repos
                 }
             }
 
-            // Adding pagination based on query parameters for GetAllPokemon endpoint, allows clients to paginate pokemon by using query parameters
+            // Adding pagination based on query parameters for GetAllPokemon endpoint, allows clients to paginate pokemon by using query parameters, allows for more efficient data retrieval and improved performance when dealing with large datasets
             pokemon = pokemon.Skip((query.PageNumber.GetValueOrDefault() - 1) * query.PageSize.GetValueOrDefault()).Take(query.PageSize.GetValueOrDefault());
 
             return await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
