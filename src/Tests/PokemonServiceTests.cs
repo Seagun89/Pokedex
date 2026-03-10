@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using API.Dtos;
 using API.Models;
 using API.Repos;

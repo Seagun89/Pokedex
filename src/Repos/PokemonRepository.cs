@@ -4,26 +4,45 @@ using API.Dtos;
 using API.Mappers;
 using Microsoft.EntityFrameworkCore;
 using API.HelperObjects;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
+using Xunit.Sdk;
 
 namespace API.Repos
 {
     public class PokemonRepository : IPokemonRepository // handles database interactions for pokemoncontroller
     {
         private readonly PokemonDBContext _context;
+        private readonly IDistributedCache _cache; // Injecting IDistributedCache for caching pokemon data, allows for improved performance and reduced database load by caching frequently accessed data
 
-        public PokemonRepository(PokemonDBContext context)
+        public PokemonRepository(PokemonDBContext context, IDistributedCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
+            var cachedPokemonList = await _cache.GetStringAsync("pokemonList_");
+
+            // if cache contains data of query return from cache
+            if (cachedPokemonList != null)
+            {
+                return JsonSerializer.Deserialize<List<PokemonResponseDto>>(cachedPokemonList) ?? throw new ArgumentNullException("Cached pokemon list is null.");
+            }
+
             var pokemon = _context.Pokemon
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
             .AsQueryable(); // primes query for filtering based on query parameters
-
+            
+            // else set data in cache and return from db
+            await _cache.SetStringAsync("pokemonList_", JsonSerializer.Serialize(await FilterPokemonAsync(pokemon, query)), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
+            });
+            
             // Adding Filtering based on query parameters, allows clients to filter pokemon by using query parameters
-            return await FilterPokemonAsync(pokemon, query);
+            return await FilterPokemonAsync(pokemon, query); 
         }
 
         public async Task<Pokemon> GetPokemonAsync(int id)

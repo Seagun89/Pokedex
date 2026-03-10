@@ -18,6 +18,13 @@ builder.Services.AddSwaggerGen(); // Adds services for generating Swagger/openAP
 builder.Services.AddDbContext<PokemonDBContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"))); // Grabs the connection string from appsettings.json
 
+// Configures distributed caching using Redis, allowing for improved performance and reducing db load by caching frequently
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+    options.InstanceName = "PokemonApiCache_";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
