@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using API.HelperObjects;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using Xunit.Sdk;
 
 namespace API.Repos
 {
@@ -14,7 +13,6 @@ namespace API.Repos
     {
         private readonly PokemonDBContext _context;
         private readonly IDistributedCache _cache; // Injecting IDistributedCache for caching pokemon data, allows for improved performance and reduced database load by caching frequently accessed data
-
         public PokemonRepository(PokemonDBContext context, IDistributedCache cache)
         {
             _context = context;
@@ -23,33 +21,43 @@ namespace API.Repos
 
         public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
+            // cached both the list and query to ensure that if same query params are used within the cache expiration time frame, the data can be retrieved from cache without having to query the database again, improving performance and reducing database load
             var cachedPokemonList = await _cache.GetStringAsync("pokemonList_");
-
+            var cachedPokemonQuery = await _cache.GetStringAsync("pokemonQuery_");
+            
             // if cache contains data of query return from cache
-            if (cachedPokemonList != null)
+            if (cachedPokemonList != null && JsonSerializer.Serialize(query) == cachedPokemonQuery)
             {
                 return JsonSerializer.Deserialize<List<PokemonResponseDto>>(cachedPokemonList) ?? throw new ArgumentNullException("Cached pokemon list is null.");
             }
-
+            
             var pokemon = _context.Pokemon
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
             .AsQueryable(); // primes query for filtering based on query parameters
-            
-            // else set data in cache and return from db
-            await _cache.SetStringAsync("pokemonList_", JsonSerializer.Serialize(await FilterPokemonAsync(pokemon, query)), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
-            });
-            
+
             // Adding Filtering based on query parameters, allows clients to filter pokemon by using query parameters
             return await FilterPokemonAsync(pokemon, query); 
         }
 
+        //TODO: Refactor FilterPokemonAsync to be more efficient, currently it is being called twice in GetAllPokemonAsync which is not ideal, consider implementing a caching mechanism within FilterPokemonAsync to avoid redundant filtering when the same query parameters are used multiple times within the cache expiration time frame
+        // Add caching for GetPokemonAsync
+        // Update cache when pokemon is added, updated, or deleted to ensure cache consistency
         public async Task<Pokemon> GetPokemonAsync(int id)
         {
+            var cachedPokemon = await _cache.GetStringAsync($"pokemon_:{id}");
+            if(cachedPokemon != null)
+            {
+                return JsonSerializer.Deserialize<Pokemon>(cachedPokemon) ?? throw new ArgumentNullException("Cache is doesn't exist.");
+            }
+
             var pokemon = await _context.Pokemon
             .Include(p => p.Abilities)
             .FirstOrDefaultAsync(p => p.Id == id);
+
+            await _cache.SetStringAsync($"pokemon_:{id}", JsonSerializer.Serialize(pokemon ?? throw new ArgumentNullException("Pokemon is doesn't exist.")),  new DistributedCacheEntryOptions() 
+            {
+                SlidingExpiration = TimeSpan.FromSeconds(1),
+            });
 
             return pokemon ?? throw new KeyNotFoundException("Pokemon with this ID does not exist.");
         }
@@ -58,12 +66,18 @@ namespace API.Repos
         {
             await _context.Pokemon.AddAsync(pokemon.MapToPokemonModel());
             await SaveChangesAsync();
+
+            await _cache.RemoveAsync("pokemonList_");
         }
 
         public async Task DeletePokemonAsync(Pokemon pokemon)
         {
+        
             _context.Pokemon.Remove(pokemon);
             await SaveChangesAsync();
+
+            await _cache.RemoveAsync($"pokemon_:{pokemon.Id}");
+            await _cache.RemoveAsync("pokemonList_");
         }
         
 #region Helper methods
@@ -118,7 +132,19 @@ namespace API.Repos
             // Adding pagination based on query parameters for GetAllPokemon endpoint, allows clients to paginate pokemon by using query parameters, allows for more efficient data retrieval and improved performance when dealing with large datasets
             pokemon = pokemon.Skip((query.PageNumber.GetValueOrDefault() - 1) * query.PageSize.GetValueOrDefault()).Take(query.PageSize.GetValueOrDefault());
 
-            return await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
+            var pokemonList = await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
+
+            await _cache.SetStringAsync("pokemonQuery_", JsonSerializer.Serialize(query), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+            });
+
+            await _cache.SetStringAsync("pokemonList_", JsonSerializer.Serialize(pokemonList), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
+            });
+            
+            return pokemonList;
         }
 #endregion Helper methods
     }
