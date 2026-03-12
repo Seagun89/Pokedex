@@ -56,7 +56,7 @@ namespace API.Repos
 
             await _cache.SetStringAsync($"pokemon_:{id}", JsonSerializer.Serialize(pokemon ?? throw new ArgumentNullException("Pokemon is doesn't exist.")),  new DistributedCacheEntryOptions() 
             {
-                SlidingExpiration = TimeSpan.FromSeconds(1),
+                SlidingExpiration = TimeSpan.FromSeconds(5),
             });
 
             return pokemon ?? throw new KeyNotFoundException("Pokemon with this ID does not exist.");

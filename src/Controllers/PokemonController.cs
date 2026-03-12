@@ -5,7 +5,7 @@ using API.HelperObjects;
 
 namespace API.Controllers
 {
-    [Route("PokeDex/[controller]")]
+    [Route("/[controller]")]
     [ApiController]
     public class PokemonController : ControllerBase // Controller class handles incoming HTTP requests, and uses pokemonservice to perform operations on the pokemon data (business logic), and returns appropriate HTTP responses
     {
