@@ -9,7 +9,7 @@
   real system grows from a basic API into a scalable cloud
   application.
   
-  > When I started this project in Feburary, it was just a simple CRUD project but I wanted to expand on my skills. \
+  > When I started this project in February, it was just a simple CRUD project but I wanted to expand on my skills. \
   > I added the project to Git after base CRUD creation.
 
  ## Current Status
