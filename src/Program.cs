@@ -1,8 +1,12 @@
 using API.Data;
 using API.ErrorHandling;
+using API.Models;
 using API.Repos;
 using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,38 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "PokemonApiCache_";
 });
 
+// Configures Identity Services for user authentication and authorization
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = default;
+
+}).AddEntityFrameworkStores<PokemonDBContext>();
+
+// Configures JWT authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +72,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();  // Maps controller endpoints to the app request pipeline
 

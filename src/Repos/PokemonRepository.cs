@@ -32,6 +32,7 @@ namespace API.Repos
             }
             
             var pokemon = _context.Pokemon
+            .AsNoTracking() // improves performance by not tracking changes to the entities, since we are only reading data and not modifying it, this can reduce memory usage and speed up query execution, especially when dealing with large datasets
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
             .AsQueryable(); // primes query for filtering based on query parameters
 
@@ -39,9 +40,6 @@ namespace API.Repos
             return await FilterPokemonAsync(pokemon, query); 
         }
 
-        //TODO: Refactor FilterPokemonAsync to be more efficient, currently it is being called twice in GetAllPokemonAsync which is not ideal, consider implementing a caching mechanism within FilterPokemonAsync to avoid redundant filtering when the same query parameters are used multiple times within the cache expiration time frame
-        // Add caching for GetPokemonAsync
-        // Update cache when pokemon is added, updated, or deleted to ensure cache consistency
         public async Task<Pokemon> GetPokemonAsync(int id)
         {
             var cachedPokemon = await _cache.GetStringAsync($"pokemon_:{id}");
@@ -51,6 +49,7 @@ namespace API.Repos
             }
 
             var pokemon = await _context.Pokemon
+            .AsNoTracking()
             .Include(p => p.Abilities)
             .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -83,7 +82,7 @@ namespace API.Repos
 #region Helper methods
         public async Task<bool> PokemonExistsAsync(string name)
         {
-            return await _context.Pokemon.Where(p => p.Name == name).AnyAsync();
+            return await _context.Pokemon.AsNoTracking().Where(p => p.Name == name).AnyAsync();
         }
 
         public async Task SaveChangesAsync()
@@ -93,7 +92,7 @@ namespace API.Repos
 
         public async Task<List<PokemonResponseDto>> FilterPokemonAsync(IQueryable<Pokemon> pokemon, QueryPokemonRequest query)
         {
-            //TODO: Turn if statements into helper method
+            //TODO: Turn if statements into switch statements 
             if (!string.IsNullOrWhiteSpace(query.AbilityType))
             {
                 pokemon = pokemon.Where(p => p.AbilityType.Contains(query.AbilityType));
