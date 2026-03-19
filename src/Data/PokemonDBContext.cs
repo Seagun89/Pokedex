@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore; // SQL injection protection and database connection management
 using API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data
 {
@@ -15,6 +16,23 @@ namespace API.Data
 
             builder.Entity<Pokemon>()
                 .HasMany(p => p.Abilities); // Add a relationship between pokemon and ability models, makes a table for abilities and links it to pokemon table using pokemonid as FKey
+
+            var roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Id = "1",
+                    Name = "Admin", // ability to add, update, and delete pokemon data
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Id = "2",
+                    Name = "User", // ability to only view pokemon data
+                    NormalizedName = "USER"
+                }
+            };
+            builder.Entity<IdentityRole>().HasData(roles); // Seed the database with roles for user authentication and authorization, allows for role-based access control
         }
     }
 }
