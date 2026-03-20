@@ -1,10 +1,9 @@
 using API.Models;
 using API.Dtos;
 using API.Mappers;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace API.Controllers
 {
     [Route("/[controller]")]
@@ -12,9 +11,11 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AccountController(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokenService;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager; 
+            _tokenService = tokenService;
         }
 
         [HttpPost("Register")]
@@ -52,7 +53,7 @@ namespace API.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync(LoginRequestDto loginDto) {
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginDto) {
             return Ok("Login endpoint is not implemented yet.");
         }
     }

@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); // Adds services for controllers to the container
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Registers the PokemonRepository as the implementation for the IPokemonRepository interface why scoped? Because we want a new instance of the repository to be created for each request, ensuring that database contexts are not shared across requests and preventing potential issues with concurrent access.
 builder.Services.AddTransient<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why transient? Because we want a new instance of the service to be created each time it is requested, which is suitable for lightweight, stateless services that do not maintain any shared state and can be safely used across multiple requests without the risk of unintended side effects.
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(); // Adds services for generating Swagger/openAPI documents
 
@@ -60,7 +61,8 @@ builder.Services.AddAuthentication(options =>
 
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ?? 
+        throw new ArgumentNullException("JWT:Secret configuration value is missing.")))
     };
 });
 

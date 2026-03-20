@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace src.Services
+using API.Models;
+namespace API.Services
 {
-    public interface ITokenService
+    public interface ITokenService 
     {
-        
+        Task<string> CreateTokenAsync(AppUser user);
     }
 }
