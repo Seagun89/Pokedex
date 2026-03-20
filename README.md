@@ -12,7 +12,7 @@
   > When I started this project in February, it was just a simple CRUD project but I wanted to expand on my skills. \
   > I added the project to Git after base CRUD creation.
 
- ## Current Status
+## Current Status
 ✅ Phase 1–3 complete \
 🔄 Phase 4 in progress (JWT Authentication & Role-based Authorization)
 
@@ -110,8 +110,19 @@ Example payload for creating a Pokémon with abilities.
     }]
 }
 ```
-
-
+## Personal Notes
+  - IOC: 
+    + inversion of control software design principle. With IoC, the management of object instances within the application is handled in container, aiming to minimize dependencies.
+  - JWT: 
+    + Json Web Token. Used for security where a user is granted a token containing a header(algo+tokenType), payload(Claims), and signature(signingkey+algo)
+  - Claims > Only Roles: 
+    + Claims are data about the user including roles. Roles are types of claims for categorizing the user and actions they can perform
+  - DI lifeTimes 
+    + Singleton - same instance whole application lifetime, Scoped - one instance per HTTP request, Transient - new instance for every request or injection
+  - Identity Services 
+    + creates user, password checking, and manages claims/roles for user authentication and authorization
+  - StackExchange Redis 
+    + distributed caching using Redis, allowing for improved performance and reducing db load by caching frequently
 
 
 
