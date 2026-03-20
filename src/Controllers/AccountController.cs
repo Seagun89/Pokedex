@@ -1,9 +1,9 @@
 using API.Models;
 using API.Dtos;
+using API.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity.Data;
 
 namespace API.Controllers
 {
@@ -19,12 +19,8 @@ namespace API.Controllers
 
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequestDto registerDto) {
-            // TODO: Create an account mapper class to map registerDto to AppUser, claimDto to claims
-            var user =  new AppUser
-            {
-                UserName = registerDto.Username,
-                Email = registerDto.Email,
-            };
+            // TODO: Create an AccountService file to handle the business logic of account controller
+            var user = registerDto.MapToAppUser(); // using extension method to map RegisterRequestDto to AppUser, simplifies the mapping process and keeps the controller code clean and maintainable
 
             var createUserResult = await _userManager.CreateAsync(user, registerDto.Password);
 
@@ -38,9 +34,7 @@ namespace API.Controllers
 
                 if (registerDto.Claims != null && registerDto.Claims.Any())
                 {
-                    var claims = registerDto.Claims
-                        .Select(c => new Claim(c.Type, c.Value))
-                        .ToList();
+                    var claims = registerDto.MapToClaims();
                     
                     var claimResult = await _userManager.AddClaimsAsync(user, claims);
                     
