@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Data;
 using API.ErrorHandling;
 using API.Models;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,31 @@ builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Register
 builder.Services.AddTransient<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why transient? Because we want a new instance of the service to be created each time it is requested, which is suitable for lightweight, stateless services that do not maintain any shared state and can be safely used across multiple requests without the risk of unintended side effects.
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddEndpointsApiExplorer(); 
-builder.Services.AddSwaggerGen(); // Adds services for generating Swagger/openAPI documents
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pokemon API", Version = "v1" });
+
+    // 🔑 Add JWT Bearer definition
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
+}); // Adds services for generating Swagger/openAPI documents
 
 //Configures the database connection using Entity framework and SQL server
 builder.Services.AddDbContext<PokemonDBContext>(options => 
@@ -68,7 +94,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    //options.AddPolicy();
+    options.AddPolicy("CanViewAllPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
+    options.AddPolicy("CanAddPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
 });
 var app = builder.Build();
 
@@ -77,7 +104,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1")); //Configures swagger UI endpoint
-    
 }
 app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
 app.UseHttpsRedirection();

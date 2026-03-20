@@ -4,6 +4,8 @@ namespace API.ErrorHandling
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
+        private string message = string.Empty;
+        private string? stackTrace = string.Empty;
 
         public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
         {
@@ -27,13 +29,15 @@ namespace API.ErrorHandling
         {
             _logger.LogError(ex, "An error occurred while processing the request.");
 
-            var message = "";
-            var stackTrace = "";
-
             switch (ex)
             {
                 case KeyNotFoundException: 
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    message = ex.Message;
+                    stackTrace = ex.StackTrace;
+                    break;
+                case UnauthorizedAccessException:
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     message = ex.Message;
                     stackTrace = ex.StackTrace;
                     break;

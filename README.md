@@ -31,8 +31,8 @@
   + [x] Pagination/Filtering/Sorting
   + [x] Logging/ExceptionHandling
   #### *Phase 4*
-  + [ ] JWT authentication
-  + [ ] Role-based authorization
+  + [x] JWT authentication
+  + [x] Role-based authorization
   #### *Phase 5*
   + [ ] Messaging system
   + [ ] Background worker services 
@@ -110,19 +110,58 @@ Example payload for creating a Pokémon with abilities.
     }]
 }
 ```
+
+## Example RegisterRequestDto Schema (for register and login to create JWT)
+  ```
+{
+  "username": "ashketchum",
+  "password": "Pikachu123!",
+  "email": "ash.ketchum@pokemon.com",
+  "claims": [
+    {
+      "type": "role",
+      "value": "User"
+    },
+    {
+      "type": "region",
+      "value": "Kanto"
+    },
+    {
+      "type": "subscription",
+      "value": "Free"
+    }
+  ]
+}
+  ```
+  
 ## Personal Notes
   - IOC: 
-    + inversion of control software design principle. With IoC, the management of object instances within the application is handled in container, aiming to minimize dependencies.
+    + Inversion of control software design principle. With IoC, the management of object instances within the application is handled in container, aiming to minimize dependencies.
   - JWT: 
     + Json Web Token. Used for security where a user is granted a token containing a header(algo+tokenType), payload(Claims), and signature(signingkey+algo)
-  - Claims > Only Roles: 
+    + Need to add Authorize button on swagger to login user with JWT by config AddSwaggerGen()
+  - Policy > Roles:
+    + Enterprises typically use policy-based rather than role-based Access. Built on top of roles + claims. Allows for checking roles, claims, conditions and scales better
+  - Claims & Roles: 
     + Claims are data about the user including roles. Roles are types of claims for categorizing the user and actions they can perform
-  - DI lifeTimes 
+  - DI lifeTimes:
     + Singleton - same instance whole application lifetime, Scoped - one instance per HTTP request, Transient - new instance for every request or injection
-  - Identity Services 
-    + creates user, password checking, and manages claims/roles for user authentication and authorization
-  - StackExchange Redis 
-    + distributed caching using Redis, allowing for improved performance and reducing db load by caching frequently
+  - Identity Services:
+    + Creates user, password checking, and manages claims/roles for user authentication and authorization
+  - StackExchange Redis:
+    + Distributed caching using Redis, allowing for improved performance and reducing db load by caching frequently
+    + Need to use JsonSerializer and JsonDeserializer to cache string or uncache 
+    + Requires Docker to run redis server: 
+      + docker pull redis
+      + docker run --name my-redis -p 6379:6379 -d redis (localHost 6379 is default)
+      + docker exec -it my-redis redis-cli (Connect to redis CLI in container)
+  - Query Optimization techniques:
+    + Indexing (uses index seek instead of full table search)
+    + Caching
+    + Pagination
+    + Filtering/Sorting
+
+
 
 
 

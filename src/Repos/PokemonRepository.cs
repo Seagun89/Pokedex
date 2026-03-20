@@ -32,7 +32,7 @@ namespace API.Repos
             }
             
             var pokemon = _context.Pokemon
-            .AsNoTracking() // improves performance by not tracking changes to the entities, since we are only reading data and not modifying it, this can reduce memory usage and speed up query execution, especially when dealing with large datasets
+            //.AsNoTracking() // improves performance by not tracking changes to the entities, since we are only reading data and not modifying it, this can reduce memory usage and speed up query execution, especially when dealing with large datasets
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
             .AsQueryable(); // primes query for filtering based on query parameters
 

@@ -2,6 +2,7 @@ using API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using API.Services;
 using API.HelperObjects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -15,13 +16,15 @@ namespace API.Controllers
             _pokemonService = pokemonService;
         }
 
+        [Authorize(Policy = "CanViewAllPokemon")] 
         [HttpGet("PokeDex/All")]
         public async Task<IActionResult> GetAllPokemonAsync([FromQuery] QueryPokemonRequest query) // Adding filtering for GetAllPokemon endpoint, allows clients to filter pokemon by using query parameters
         {
             var pokemonList = await _pokemonService.GetAllPokemonAsync(query);
             return Ok(pokemonList);
         }
-
+        
+        [Authorize(Policy = "CanAddPokemon")]
         [HttpGet("PokeDex/GetPokemon/{id:int}")] // route constraint to ensure id is an integer
         public async Task<IActionResult> GetPokemonByIdAsync([FromRoute] int id)
         {
@@ -29,6 +32,7 @@ namespace API.Controllers
             return Ok(pokemon);
         }
 
+        
         [HttpPost("PokeDex/AddPokemon")]
         public async Task<IActionResult> AddPokemonAsync([FromBody] PokemonRequestDto pokemon)
         {

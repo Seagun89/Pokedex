@@ -39,7 +39,7 @@ namespace API.Services
             await _pokemonRepository.DeletePokemonAsync(pokemon);
             await _pokemonRepository.SaveChangesAsync();
         }
-
+        
         public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
             return await _pokemonRepository.GetAllPokemonAsync(query);
