@@ -37,6 +37,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = default;
 
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
 }).AddEntityFrameworkStores<PokemonDBContext>();
 
 // Configures JWT authentication
@@ -60,6 +62,11 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    //options.AddPolicy();
 });
 var app = builder.Build();
 

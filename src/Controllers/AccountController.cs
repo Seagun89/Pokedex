@@ -2,7 +2,8 @@ using API.Models;
 using API.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace API.Controllers
 {
@@ -17,35 +18,48 @@ namespace API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDto registerDto) {
-            try
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequestDto registerDto) {
+            // TODO: Create an account mapper class to map registerDto to AppUser, claimDto to claims
+            var user =  new AppUser
             {
-                var user =  new AppUser
-                {
-                    UserName = registerDto.Username,
-                    Email = registerDto.Email,
-                };     
+                UserName = registerDto.Username,
+                Email = registerDto.Email,
+            };
 
-                var createUserResult = await _userManager.CreateAsync(user, registerDto.Password);
+            var createUserResult = await _userManager.CreateAsync(user, registerDto.Password);
 
-                if (createUserResult.Succeeded)
+            if (createUserResult.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, "User"); // role-based access control, assigns the "User" role to the newly created user, allowing them to have specific permissions and access levels defined for that role in the application
+                
+                if (roleResult.Errors.Any()) {
+                    throw new InvalidOperationException("An error occurred while adding the user to this role.");
+                }
+
+                if (registerDto.Claims != null && registerDto.Claims.Any())
                 {
-                    var roleResult = await _userManager.AddToRoleAsync(user, "User");
+                    var claims = registerDto.Claims
+                        .Select(c => new Claim(c.Type, c.Value))
+                        .ToList();
                     
-                    if (roleResult.Errors.Any()) {
-                        return StatusCode(500, roleResult.Errors);
+                    var claimResult = await _userManager.AddClaimsAsync(user, claims);
+                    
+                    if (claimResult.Errors.Any())
+                    {
+                        throw new InvalidOperationException("An error occurred while adding claims to the user.");
                     }
                 }
-                else if (createUserResult.Errors.Any()) {
-                    return StatusCode(500, createUserResult.Errors);
-                }
-            } catch (Exception ex)
-            {
-                //check to see if user already exists, if so return invalidOperationException with message "User already exists"
-                throw new InvalidOperationException("An error occurred while creating the user.", ex);
+            }
+            else if (createUserResult.Errors.Any()) {
+                throw new InvalidOperationException("An error occurred while creating the user.");
             }
 
-            return Ok("User created successfully with role 'User'."); 
+            return Created($"/Account/Register/{user.Id}", "User created successfully with claims and role 'User'."); 
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginAsync(LoginRequestDto loginDto) {
+            return Ok("Login endpoint is not implemented yet.");
         }
     }
 }
