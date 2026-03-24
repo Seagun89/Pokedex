@@ -1,4 +1,5 @@
 using API.Dtos;
+using API.MessageBroker;
 using API.Models;
 using API.Repos;
 using API.Services;
@@ -10,12 +11,14 @@ namespace API.Tests
     public class PokemonServiceTests
     {
         private readonly Mock<IPokemonRepository> _pokemonRepositoryMock;
+        private readonly Mock<IRabbitMQPublisher<List<PokemonResponseDto>>> _publisherMock;
         private readonly IPokemonService _pokemonServiceMock;
 
         public PokemonServiceTests()
         {
             _pokemonRepositoryMock = new Mock<IPokemonRepository>();
-            _pokemonServiceMock = new PokemonService(_pokemonRepositoryMock.Object);
+            _publisherMock = new Mock<IRabbitMQPublisher<List<PokemonResponseDto>>>();
+            _pokemonServiceMock = new PokemonService(_pokemonRepositoryMock.Object, _publisherMock.Object);
         }
 
         [Fact]

@@ -16,7 +16,7 @@ namespace API.Controllers
             _pokemonService = pokemonService;
         }
 
-        [Authorize(Policy = "CanViewAllPokemon")] 
+        [AllowAnonymous] 
         [HttpGet("PokeDex/All")]
         public async Task<IActionResult> GetAllPokemonAsync([FromQuery] QueryPokemonRequest query) // Adding filtering for GetAllPokemon endpoint, allows clients to filter pokemon by using query parameters
         {
@@ -24,7 +24,7 @@ namespace API.Controllers
             return Ok(pokemonList);
         }
         
-        [Authorize(Policy = "CanAddPokemon")]
+        [Authorize(Policy = "CanViewPokemon")]
         [HttpGet("PokeDex/GetPokemon/{id:int}")] // route constraint to ensure id is an integer
         public async Task<IActionResult> GetPokemonByIdAsync([FromRoute] int id)
         {
@@ -38,6 +38,13 @@ namespace API.Controllers
         {
             await _pokemonService.AddPokemonAsync(pokemon);
             return Ok("Pokemon added successfully");
+        }
+
+        [HttpPost("PokeDex/ExportAllPokemon")]
+        public async Task<IActionResult> ExportAllPokemonAsync()
+        {
+            await _pokemonService.ExportAllPokemonAsync();
+            return Accepted("Pokemon export initiated successfully"); // returns 202 Accepted status code, indicating that the request has been accepted for processing, but the processing has not been completed yet, suitable for long-running operations like exporting data
         }
 
         [HttpPut("PokeDex/UpdatePokemon/{id:int}")]

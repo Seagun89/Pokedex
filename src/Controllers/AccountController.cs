@@ -28,7 +28,7 @@ namespace API.Controllers
 
             if (createUserResult.Succeeded)
             {
-                // TODO: Refractor with switch case to handle different roles and claims
+                // TODO: Refractor to handle different roles and claims
                 if (registerDto.Claims != null && registerDto.Claims.Any(c => c.Type.ToLower() == "role" && c.Value.ToLower() == "user"))
                 {
                     var roleResult = await _userManager.AddToRoleAsync(user, "User"); // role-based access control, assigns the "User" role to the newly created user, allowing them to have specific permissions and access levels defined for that role in the application
@@ -59,7 +59,6 @@ namespace API.Controllers
 
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestDto loginDto) {
-            
             if (loginDto == null || string.IsNullOrWhiteSpace(loginDto.UserName) || string.IsNullOrWhiteSpace(loginDto.Password))
             {
                 throw new ArgumentNullException("LoginRequestDto is null or contains invalid data.");

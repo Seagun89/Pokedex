@@ -145,6 +145,16 @@ namespace API.Repos
             
             return pokemonList;
         }
+
+        public async Task<List<PokemonResponseDto>> ExportAllPokemonAsync()
+        {
+            var pokemon = await _context.Pokemon
+            .AsNoTracking()
+            .Include(p => p.Abilities)
+            .ToListAsync();
+
+            return pokemon.Select(p => p.MapToPokemonResponseDto()).ToList();
+        }
 #endregion Helper methods
     }
 }

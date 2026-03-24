@@ -12,5 +12,6 @@ namespace API.Repos
         public Task DeletePokemonAsync(Pokemon pokemon);
         public Task<bool> PokemonExistsAsync(string name);
         public Task SaveChangesAsync();
+        public Task<List<PokemonResponseDto>> ExportAllPokemonAsync();
     }
 }

@@ -12,5 +12,7 @@ namespace API.Services
         public Task UpdatePokemonAsync(PokemonUpdateRequestDto UpdateRequest, int id);
         public Task DeletePokemonAsync(int id);
         public Task<Pokemon> GetPokemonOrThrowAsync(int id);
+        public Task ExportAllPokemonAsync();
+         public Task ExportAsync(List<PokemonResponseDto> pokemon);
     }
 }

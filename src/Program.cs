@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using API.Data;
+using API.Dtos;
 using API.ErrorHandling;
+using API.MessageBroker;
 using API.Models;
 using API.Repos;
 using API.Services;
@@ -15,9 +17,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers(); // Adds services for controllers to the container
+builder.Services.AddSingleton<IRabbitMQPublisher<List<PokemonResponseDto>>, RabbitMQPublisher<List<PokemonResponseDto>>>(); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Registers the PokemonRepository as the implementation for the IPokemonRepository interface why scoped? Because we want a new instance of the repository to be created for each request, ensuring that database contexts are not shared across requests and preventing potential issues with concurrent access.
-builder.Services.AddTransient<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why transient? Because we want a new instance of the service to be created each time it is requested, which is suitable for lightweight, stateless services that do not maintain any shared state and can be safely used across multiple requests without the risk of unintended side effects.
+builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why transient? Because we want a new instance of the service to be created each time it is requested, which is suitable for lightweight, stateless services that do not maintain any shared state and can be safely used across multiple requests without the risk of unintended side effects.
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddHostedService<ExportPokemonWorker>();
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pokemon API", Version = "v1" });
@@ -95,6 +99,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanViewAllPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
+    options.AddPolicy("CanViewPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
     options.AddPolicy("CanAddPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
 });
 var app = builder.Build();

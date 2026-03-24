@@ -3,15 +3,19 @@ using API.Dtos;
 using API.Repos;
 using API.Models;
 using API.HelperObjects;
+using API.MessageBroker;
 
 namespace API.Services
 {
     public class PokemonService : IPokemonService // handles business logic for PokemonController, calls methods from PokemonRepository to interact with the database
     {
         public IPokemonRepository _pokemonRepository;
-        public PokemonService(IPokemonRepository pokemonRepository)
+        public IRabbitMQPublisher<List<PokemonResponseDto>> _publisher;
+        public QueryPokemonRequest _query = new QueryPokemonRequest(); // default query object to be used for GetAllPokemonAsync when no query parameters are provided, allows for consistent handling of query parameters and caching in the repository layer
+        public PokemonService(IPokemonRepository pokemonRepository, IRabbitMQPublisher<List<PokemonResponseDto>> publisher)
         {
             _pokemonRepository = pokemonRepository;
+            _publisher = publisher;
         }
         public async Task AddPokemonAsync(PokemonRequestDto pokemon)
         {
@@ -42,6 +46,7 @@ namespace API.Services
         
         public async Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query)
         {
+            _query = query;
             return await _pokemonRepository.GetAllPokemonAsync(query);
         }
 
@@ -73,10 +78,33 @@ namespace API.Services
             await _pokemonRepository.SaveChangesAsync();
         }
 
+        public async Task ExportAllPokemonAsync()
+        {
+            var pokemonJob = await _pokemonRepository.ExportAllPokemonAsync(); // get pokemon data to be exported
+            await _publisher.PublishAsync(pokemonJob);
+        }
+
         // helper methods
         public async Task<Pokemon> GetPokemonOrThrowAsync(int id)
         {
             return await _pokemonRepository.GetPokemonAsync(id) ?? throw new KeyNotFoundException("Pokemon with this ID does not exist.");
+        }
+
+        public async Task ExportAsync(List<PokemonResponseDto> pokemon)
+        {
+            var fileName = @"Pokemon_Export_" + DateTime.UtcNow.ToString("MM_dd_yyyy_HH_mm") + ".csv";
+            Directory.CreateDirectory("Exports");
+
+            var path = Path.Combine("Exports", fileName);
+
+            using var StreamWriter = new StreamWriter(path);
+            await StreamWriter.WriteLineAsync("Id | Name | AbilityType");
+            await StreamWriter.WriteLineAsync("-----------------------------------");
+
+            foreach(var p in pokemon)
+            {
+                await StreamWriter.WriteLineAsync($"{p.Id} | {p.Name} | {p.AbilityType}");
+            }
         }
     }
 }
