@@ -13,8 +13,8 @@
   > I added the project to Git after base CRUD creation.
 
 ## Current Status
-✅ Phase 1–3 complete \
-🔄 Phase 4 in progress (JWT Authentication & Role-based Authorization)
+✅ Phase 1–4 complete \
+🔄 Phase 5 (Creating export all pokemon job then using queue and background worker)
 
 ## Architecture Path
 
@@ -35,7 +35,7 @@
   + [x] Role-based authorization
   #### *Phase 5*
   + [ ] Messaging system
-  + [ ] Background worker services 
+  + [x] Background worker services 
   #### *Phase 6*
   + [ ] Docker
   + [ ] Azure
@@ -52,17 +52,19 @@
   - Redis Caching
   - xUnit
   - Moq
-    
+  - RabbitMQ 
+
  **Database** 
   - Microsoft SQL Server
+ 
+ **Container** 
+  - Docker
 
 **Future FrontEnd** 
   - Angular Framework
   - TypeScript
-    
+  
 **Future Stack Additions**
-  - Kafka or RabbitMQ
-  - Docker
   - Microsoft Azure
   - OpenAI
 
@@ -146,6 +148,8 @@ Example payload for creating a Pokémon with abilities.
     + Claims are data about the user including roles. Roles are types of claims for categorizing the user and actions they can perform
   - DI lifeTimes:
     + Singleton - same instance whole application lifetime, Scoped - one instance per HTTP request, Transient - new instance for every request or injection
+    + Dependent process - transient => Scoped => Singleton
+    + If need to use different lifetime in in singleton call serviceProviders then get required scope
   - Identity Services:
     + Creates user, password checking, and manages claims/roles for user authentication and authorization
   - StackExchange Redis:
@@ -160,6 +164,15 @@ Example payload for creating a Pokémon with abilities.
     + Caching
     + Pagination
     + Filtering/Sorting
+  - RabbitMQ:
+    + Message broker (it accepts and forwards messages) using publishers => queue => consumers
+    + Await/Async = Not blocking thread and able to handle I/O operations without block
+    + synchronous = sequential start to end
+    + background worker = handle work later after response to request 
+    + Message = binary blobs of data (use JsonSerializer to convert object into string then Encoding.UTF8.GetBytes into bytes)
+    + Can instantiate publisher (singleton service) connection and channel within a consumer (backgroundservice) execute method hosted using AddHostedService
+    + Can survey queues and channels/connections by putting localhost:port into browser
+
 
 
 

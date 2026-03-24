@@ -7,8 +7,8 @@ namespace API.MessageBroker
     public class RabbitMQPublisher<T> : IRabbitMQPublisher<T>, IAsyncDisposable
     {
         private ConnectionFactory _factory;
-        private IConnection _connection;
-        private IChannel _channel;
+        private IConnection _connection = null!;
+        private IChannel _channel = null!;
         private string _queueName = string.Empty;
 
         public RabbitMQPublisher()
