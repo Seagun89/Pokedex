@@ -19,8 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); // Adds services for controllers to the container
 builder.Services.AddSingleton<IRabbitMQPublisher<List<PokemonResponseDto>>, RabbitMQPublisher<List<PokemonResponseDto>>>(); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Registers the PokemonRepository as the implementation for the IPokemonRepository interface why scoped? Because we want a new instance of the repository to be created for each request, ensuring that database contexts are not shared across requests and preventing potential issues with concurrent access.
-builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why transient? Because we want a new instance of the service to be created each time it is requested, which is suitable for lightweight, stateless services that do not maintain any shared state and can be safely used across multiple requests without the risk of unintended side effects.
+builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why scoped? Because we want a new instance of the service for each requested
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddHostedService<ExportPokemonWorker>();
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(c => {
