@@ -14,7 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–4 complete \
-🔄 Phase 5 (Creating export all pokemon job then using queue and background worker)
+🔄 Phase 5 (Creating worker project to decouple from pokemonAPI)
 
 ## Architecture Path
 
@@ -34,9 +34,10 @@
   + [x] JWT authentication
   + [x] Role-based authorization
   #### *Phase 5*
-  + [ ] Messaging system
+  + [x] Messaging system
   + [x] Background worker services 
   #### *Phase 6*
+  + [ ] Microservices architecture
   + [ ] Docker
   + [ ] Azure
   #### *Phase 7*
