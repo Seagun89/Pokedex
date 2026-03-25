@@ -1,4 +1,4 @@
-namespace PokemonAPI.Dtos
+﻿namespace SharedDtos
 {
     public class PokemonResponseDto
     {

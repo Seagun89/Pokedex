@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PokemonAPI.HelperObjects;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
+using SharedDtos;
 
 namespace PokemonAPI.Repos
 {

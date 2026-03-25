@@ -1,6 +1,7 @@
 using PokemonAPI.Models;
 using PokemonAPI.Dtos;
 using PokemonAPI.HelperObjects;
+using SharedDtos;
 
 namespace PokemonAPI.Repos
 {

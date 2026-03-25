@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using PokemonAPI.Data;
-using PokemonAPI.Dtos;
+using SharedDtos;
 using PokemonAPI.ErrorHandling;
 using PokemonAPI.MessageBroker;
 using PokemonAPI.Models;
@@ -17,9 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers(); // Adds services for controllers to the container
-builder.Services.AddSingleton<IRabbitMQPublisher<List<PokemonResponseDto>>, RabbitMQPublisher<List<PokemonResponseDto>>>(sp =>
+builder.Services.AddSingleton<IRabbitMQPublisher<ExportPokemonMessage>, RabbitMQPublisher<ExportPokemonMessage>>(sp =>
 {
-    var publisher = new RabbitMQPublisher<List<PokemonResponseDto>>();
+    var publisher = new RabbitMQPublisher<ExportPokemonMessage>();
     publisher.CreateAsync("Pokemon_Export_Worker").GetAwaiter().GetResult();
     return publisher;
 }); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
@@ -27,7 +27,6 @@ builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Register
 builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why scoped? Because we want a new instance of the service for each requested
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddHostedService<ExportPokemonWorker>();
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pokemon PokemonAPI", Version = "v1" });

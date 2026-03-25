@@ -1,5 +1,6 @@
 using PokemonAPI.Dtos;
 using PokemonAPI.Models;
+using SharedDtos;
 
 namespace PokemonAPI.Mappers
 {

@@ -1,6 +1,7 @@
 using PokemonAPI.Dtos;
 using PokemonAPI.HelperObjects;
 using PokemonAPI.Models;
+using SharedDtos;
 
 namespace PokemonAPI.Services
 {
@@ -13,6 +14,5 @@ namespace PokemonAPI.Services
         public Task DeletePokemonAsync(int id);
         public Task<Pokemon> GetPokemonOrThrowAsync(int id);
         public Task ExportAllPokemonAsync();
-         public Task ExportAsync(List<PokemonResponseDto> pokemon);
     }
 }

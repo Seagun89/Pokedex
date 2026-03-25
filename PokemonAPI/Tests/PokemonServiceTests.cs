@@ -5,19 +5,20 @@ using PokemonAPI.Repos;
 using PokemonAPI.Services;
 using Moq;
 using Xunit;
+using SharedDtos;
 
 namespace PokemonAPI.Tests
 {
     public class PokemonServiceTests
     {
         private readonly Mock<IPokemonRepository> _pokemonRepositoryMock;
-        private readonly Mock<IRabbitMQPublisher<List<PokemonResponseDto>>> _publisherMock;
+        private readonly Mock<IRabbitMQPublisher<ExportPokemonMessage>> _publisherMock;
         private readonly IPokemonService _pokemonServiceMock;
 
         public PokemonServiceTests()
         {
             _pokemonRepositoryMock = new Mock<IPokemonRepository>();
-            _publisherMock = new Mock<IRabbitMQPublisher<List<PokemonResponseDto>>>();
+            _publisherMock = new Mock<IRabbitMQPublisher<ExportPokemonMessage>>();
             _pokemonServiceMock = new PokemonService(_pokemonRepositoryMock.Object, _publisherMock.Object);
         }
 
