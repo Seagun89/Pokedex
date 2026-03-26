@@ -1,6 +1,7 @@
-using PokemonAPI.Dtos;
+using SharedDtos.Dtos;
 using PokemonAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+
 namespace PokemonAPI.Controllers
 {
     [Route("/[controller]")]

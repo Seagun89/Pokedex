@@ -1,6 +1,6 @@
-using PokemonAPI.Dtos;
-using PokemonAPI.Mappers;
-using PokemonAPI.Models;
+using SharedDtos.Dtos;
+using Infrastructure.Mappers;
+using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace PokemonAPI.Services

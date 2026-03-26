@@ -1,4 +1,5 @@
-using PokemonAPI.Models;
+using Infrastructure.Models;
+
 namespace PokemonAPI.Services
 {
     public interface ITokenService 

@@ -1,7 +1,7 @@
-using PokemonAPI.Dtos;
+using SharedDtos.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using PokemonAPI.Services;
-using PokemonAPI.HelperObjects;
+using SharedDtos.HelperObjects;
 using Microsoft.AspNetCore.Authorization;
 
 namespace PokemonAPI.Controllers

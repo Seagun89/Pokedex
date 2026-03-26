@@ -1,16 +1,16 @@
 using System.Security.Claims;
-using PokemonAPI.Data;
-using SharedDtos;
+using Infrastructure.Data;
 using PokemonAPI.ErrorHandling;
 using PokemonAPI.MessageBroker;
-using PokemonAPI.Models;
-using PokemonAPI.Repos;
+using Infrastructure.Models;
+using Infrastructure.Repos;
 using PokemonAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SharedDtos.HelperObjects;
 
 var builder = WebApplication.CreateBuilder(args);
 

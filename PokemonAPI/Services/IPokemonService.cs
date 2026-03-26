@@ -1,7 +1,6 @@
-using PokemonAPI.Dtos;
-using PokemonAPI.HelperObjects;
-using PokemonAPI.Models;
-using SharedDtos;
+using SharedDtos.HelperObjects;
+using SharedDtos.Dtos;
+using Infrastructure.Models;
 
 namespace PokemonAPI.Services
 {

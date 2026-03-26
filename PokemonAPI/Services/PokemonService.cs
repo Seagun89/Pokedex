@@ -1,10 +1,9 @@
-using PokemonAPI.Mappers;
-using PokemonAPI.Dtos;
-using PokemonAPI.Repos;
-using PokemonAPI.Models;
-using PokemonAPI.HelperObjects;
+using SharedDtos.Dtos;
+using SharedDtos.HelperObjects;
+using Infrastructure.Repos;
+using Infrastructure.Models;
+using Infrastructure.Mappers;
 using PokemonAPI.MessageBroker;
-using SharedDtos;
 
 namespace PokemonAPI.Services
 {
@@ -83,7 +82,7 @@ namespace PokemonAPI.Services
         {
             var message = new ExportPokemonMessage
             {
-                PokemonList = await _pokemonRepository.ExportAllPokemonAsync()
+                ExportType = "All"
             };
 
             await _publisher.PublishAsync(message);

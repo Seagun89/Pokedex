@@ -1,4 +1,4 @@
-using PokemonAPI.Dtos;
+using SharedDtos.Dtos;
 
 namespace PokemonAPI.Services
 {

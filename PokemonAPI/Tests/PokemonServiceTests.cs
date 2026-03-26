@@ -1,11 +1,11 @@
-using PokemonAPI.Dtos;
+using SharedDtos.Dtos;
 using PokemonAPI.MessageBroker;
-using PokemonAPI.Models;
-using PokemonAPI.Repos;
+using Infrastructure.Models;
+using Infrastructure.Repos;
 using PokemonAPI.Services;
 using Moq;
 using Xunit;
-using SharedDtos;
+using SharedDtos.HelperObjects;
 
 namespace PokemonAPI.Tests
 {
