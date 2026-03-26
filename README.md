@@ -14,7 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–4 complete \
-🔄 Phase 5 (Creating worker project to decouple from pokemonAPI)
+🔄 Phase 6 (Break out authentication/authorization into it's own service)
 
 ## Architecture Path
 
