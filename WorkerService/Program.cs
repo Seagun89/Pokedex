@@ -1,5 +1,5 @@
-using Infrastructure.Data;
-using Infrastructure.Repos;
+using PokemonAPI.Infrastructure.Data;
+using PokemonAPI.Infrastructure.Repos;
 using Microsoft.EntityFrameworkCore;
 using WorkerService.ExportPokemonWorker;
 

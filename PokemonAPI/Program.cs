@@ -1,12 +1,9 @@
-using System.Security.Claims;
-using Infrastructure.Data;
+using PokemonAPI.Infrastructure.Data;
 using PokemonAPI.ErrorHandling;
 using PokemonAPI.MessageBroker;
-using Infrastructure.Models;
-using Infrastructure.Repos;
+using PokemonAPI.Infrastructure.Repos;
 using PokemonAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -25,11 +22,8 @@ builder.Services.AddSingleton<IRabbitMQPublisher<ExportPokemonMessage>, RabbitMQ
 }); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Registers the PokemonRepository as the implementation for the IPokemonRepository interface why scoped? Because we want a new instance of the repository to be created for each request, ensuring that database contexts are not shared across requests and preventing potential issues with concurrent access.
 builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why scoped? Because we want a new instance of the service for each requested
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(c => {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pokemon PokemonAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PokemonAPI", Version = "v1" });
 
     // 🔑 Add JWT Bearer definition
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -62,32 +56,12 @@ builder.Services.AddDbContext<PokemonDBContext>(options =>
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
-    options.InstanceName = "PokemonApiCache_";
 });
 
-// Configures Identity Services for user authentication and authorization
-builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
 {
-    options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = default;
-
-    options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
-}).AddEntityFrameworkStores<PokemonDBContext>();
-
-// Configures JWT authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
+    options.Authority = builder.Configuration["JWT:Authority"];
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true,
@@ -96,16 +70,16 @@ builder.Services.AddAuthentication(options =>
 
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ?? 
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ??
         throw new ArgumentNullException("JWT:Secret configuration value is missing.")))
     };
 });
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CanViewAllPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
-    options.AddPolicy("CanViewPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
-    options.AddPolicy("CanAddPokemon", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
+    options.AddPolicy("CanViewAllPokemon", policy => policy.RequireRole("User"));
+    options.AddPolicy("CanViewPokemon", policy => policy.RequireRole("User"));
+    options.AddPolicy("CanAddPokemon", policy => policy.RequireRole("Admin"));
 });
 
 var app = builder.Build();

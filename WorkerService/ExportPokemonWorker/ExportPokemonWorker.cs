@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SharedDtos.Dtos;
 using SharedDtos.HelperObjects;
-using Infrastructure.Repos;
+using PokemonAPI.Infrastructure.Repos;
 
 namespace WorkerService.ExportPokemonWorker
 {
@@ -36,6 +36,7 @@ namespace WorkerService.ExportPokemonWorker
             {
                 var scope = _serviceProvider.CreateScope();
                 var _pokemonRepository = scope.ServiceProvider.GetRequiredService<IPokemonRepository>();
+
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
@@ -46,7 +47,6 @@ namespace WorkerService.ExportPokemonWorker
                     var pokemonList = await _pokemonRepository.ExportAllPokemonAsync();
                     await ExportAsync(pokemonList);
                 }
-                
 
                 Console.WriteLine($" [x] Received {message}");
                 await Task.CompletedTask;

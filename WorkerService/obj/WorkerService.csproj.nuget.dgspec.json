@@ -4,14 +4,14 @@
     "D:\\Dev\\PokemonApp\\WorkerService\\WorkerService.csproj": {}
   },
   "projects": {
-    "D:\\Dev\\PokemonApp\\Infrastructure\\Infrastructure.csproj": {
+    "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\PokemonAPI.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Dev\\PokemonApp\\Infrastructure\\Infrastructure.csproj",
-        "projectName": "Infrastructure",
-        "projectPath": "D:\\Dev\\PokemonApp\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\PokemonAPI.Infrastructure.csproj",
+        "projectName": "PokemonAPI.Infrastructure",
+        "projectPath": "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\PokemonAPI.Infrastructure.csproj",
         "packagesPath": "D:\\NuGetPackages",
-        "outputPath": "D:\\Dev\\PokemonApp\\Infrastructure\\obj\\",
+        "outputPath": "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,11 +54,13 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.14, )"
             },
-            "Microsoft.EntityFrameworkCore": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.14, )"
             },
@@ -218,8 +220,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\Dev\\PokemonApp\\Infrastructure\\Infrastructure.csproj": {
-                "projectPath": "D:\\Dev\\PokemonApp\\Infrastructure\\Infrastructure.csproj"
+              "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\PokemonAPI.Infrastructure.csproj": {
+                "projectPath": "D:\\Dev\\PokemonApp\\PokemonAPI.Infrastructure\\PokemonAPI.Infrastructure.csproj"
               },
               "D:\\Dev\\PokemonApp\\SharedDtos\\SharedDtos.csproj": {
                 "projectPath": "D:\\Dev\\PokemonApp\\SharedDtos\\SharedDtos.csproj"

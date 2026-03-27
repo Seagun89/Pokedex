@@ -1,6 +1,6 @@
 using SharedDtos.HelperObjects;
 using SharedDtos.Dtos;
-using Infrastructure.Models;
+using PokemonAPI.Infrastructure.Models;
 
 namespace PokemonAPI.Services
 {

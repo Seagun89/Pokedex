@@ -1,8 +1,8 @@
 using SharedDtos.Dtos;
 using SharedDtos.HelperObjects;
-using Infrastructure.Repos;
-using Infrastructure.Models;
-using Infrastructure.Mappers;
+using PokemonAPI.Infrastructure.Repos;
+using PokemonAPI.Infrastructure.Models;
+using PokemonAPI.Infrastructure.Mappers;
 using PokemonAPI.MessageBroker;
 
 namespace PokemonAPI.Services

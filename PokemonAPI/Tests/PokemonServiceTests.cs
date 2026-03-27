@@ -1,7 +1,7 @@
 using SharedDtos.Dtos;
 using PokemonAPI.MessageBroker;
-using Infrastructure.Models;
-using Infrastructure.Repos;
+using PokemonAPI.Infrastructure.Models;
+using PokemonAPI.Infrastructure.Repos;
 using PokemonAPI.Services;
 using Moq;
 using Xunit;

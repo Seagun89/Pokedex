@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SharedDtos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+426fc542c20bd1c35c5ca6185b7d4e681a2474b4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+187588adfc87db8e3e30b0331c00bca8ae0f70c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("SharedDtos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SharedDtos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

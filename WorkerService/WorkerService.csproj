@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\PokemonAPI.Infrastructure\PokemonAPI.Infrastructure.csproj" />
     <ProjectReference Include="..\SharedDtos\SharedDtos.csproj" />
   </ItemGroup>
 </Project>
