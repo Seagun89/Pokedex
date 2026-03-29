@@ -14,7 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–4 complete \
-🔄 Phase 6 (Break out authentication/authorization into it's own service)
+🔄 Phase 6 (create images of my codebase to run on docker)
 
 ## Architecture Path
 
@@ -32,12 +32,12 @@
   + [x] Logging/ExceptionHandling
   #### *Phase 4*
   + [x] JWT authentication
-  + [x] Role-based authorization
+  + [x] Policy-based authorization
   #### *Phase 5*
   + [x] Messaging system
   + [x] Background worker services 
   #### *Phase 6*
-  + [ ] Microservices architecture
+  + [x] Microservices architecture
   + [ ] Docker
   + [ ] Azure
   #### *Phase 7*
