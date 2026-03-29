@@ -15,6 +15,7 @@
 ## Current Status
 ✅ Phase 1–4 complete \
 🔄 Phase 6 (create images of my codebase to run on docker)
+Considering adding CORS and ratelimiting
 
 ## Architecture Path
 
