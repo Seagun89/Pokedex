@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PokemonAPI.Services;
 using SharedDtos.HelperObjects;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace PokemonAPI.Controllers
 {
@@ -16,7 +17,8 @@ namespace PokemonAPI.Controllers
             _pokemonService = pokemonService;
         }
 
-        [AllowAnonymous] 
+        [AllowAnonymous]
+        [EnableRateLimiting("UserPolicy")]
         [HttpGet("PokeDex/All")]
         public async Task<IActionResult> GetAllPokemonAsync([FromQuery] QueryPokemonRequest query) // Adding filtering for GetAllPokemon endpoint, allows clients to filter pokemon by using query parameters
         {
@@ -34,6 +36,7 @@ namespace PokemonAPI.Controllers
 
         
         [HttpPost("PokeDex/AddPokemon")]
+        [EnableRateLimiting("UserPolicy")]
         public async Task<IActionResult> AddPokemonAsync([FromBody] PokemonRequestDto pokemon)
         {
             await _pokemonService.AddPokemonAsync(pokemon);

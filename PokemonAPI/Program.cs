@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SharedDtos.HelperObjects;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,6 +83,27 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CanAddPokemon", policy => policy.RequireRole("Admin"));
 });
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+{
+    policy.AllowCredentials();
+    policy.AllowAnyHeader();
+    policy.AllowAnyMethod();
+}));
+
+builder.Services.AddRateLimiter(options =>
+    options.AddPolicy("UserPolicy", policy =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: policy.User.Identity?.Name ?? policy.Connection.RemoteIpAddress?.ToString(),
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 2,
+                QueueLimit = 10,
+                Window = TimeSpan.FromSeconds(20)
+            }
+        )
+    )
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -92,10 +114,9 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseRateLimiter();
+app.UseCors();
 app.MapControllers();  // Maps controller endpoints to the app request pipeline
-
 app.Run(); 
