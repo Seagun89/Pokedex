@@ -7,6 +7,9 @@
       },
       "dotnetRunMessages": true,
       "nativeDebugging": true
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

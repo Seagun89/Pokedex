@@ -8,11 +8,19 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddHostedService<ExportPokemonWorker>();
 builder.Services.AddDbContext<PokemonDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"))); // Grabs the connection string from appsettings.json
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"),
+    sqlOptions => sqlOptions.EnableRetryOnFailure())); // Grabs the connection string from appsettings.json
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
 
 var host = builder.Build();
+
+using (var scope = host.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PokemonDBContext>();
+    db.Database.Migrate(); // Creates DB if it doesn't exist & applies migrations
+}
+
 host.Run();

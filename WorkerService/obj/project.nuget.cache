@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "lNczfuFDx14=",
+  "dgSpecHash": "m3Y9icXXE+Q=",
   "success": true,
   "projectFilePath": "D:\\Dev\\PokemonApp\\WorkerService\\WorkerService.csproj",
   "expectedPackageFiles": [
@@ -53,6 +53,7 @@
     "D:\\NuGetPackages\\microsoft.identitymodel.protocols.openidconnect\\6.35.0\\microsoft.identitymodel.protocols.openidconnect.6.35.0.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.identitymodel.tokens\\6.35.0\\microsoft.identitymodel.tokens.6.35.0.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
+    "D:\\NuGetPackages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "D:\\NuGetPackages\\pipelines.sockets.unofficial\\2.2.8\\pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
     "D:\\NuGetPackages\\rabbitmq.client\\7.2.1\\rabbitmq.client.7.2.1.nupkg.sha512",

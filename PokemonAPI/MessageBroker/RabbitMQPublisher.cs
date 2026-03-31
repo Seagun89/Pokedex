@@ -14,7 +14,7 @@ namespace PokemonAPI.MessageBroker
 
         public RabbitMQPublisher()
         {
-            _factory = new ConnectionFactory() { HostName = "localhost" };
+            _factory = new ConnectionFactory() { HostName = "pokemon-rabbit", Port = 5672 };
         }
 
         public async Task CreateAsync(string queueName)

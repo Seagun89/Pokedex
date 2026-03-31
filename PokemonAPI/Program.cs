@@ -51,7 +51,8 @@ builder.Services.AddSwaggerGen(c => {
 
 //Configures the database connection using Entity framework and SQL server
 builder.Services.AddDbContext<PokemonDBContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"))); // Grabs the connection string from appsettings.json
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDb"),
+    sqlOptions => sqlOptions.EnableRetryOnFailure())); // Grabs the connection string from appsettings.json
 
 // Configures distributed caching using Redis, allowing for improved performance and reducing db load by caching frequently
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -63,6 +64,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.Authority = builder.Configuration["JWT:Authority"];
+    options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true,
@@ -106,14 +108,21 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PokemonDBContext>();
+    db.Database.Migrate(); // Creates DB if it doesn't exist & applies migrations
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "My PokemonAPI V1")); //Configures swagger UI endpoint
 }
+
 app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();

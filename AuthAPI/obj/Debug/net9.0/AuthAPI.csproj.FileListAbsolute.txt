@@ -169,10 +169,10 @@ D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\staticwebassets.development.json
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\staticwebassets.build.endpoints.json
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\swae.build.ex.cache
-D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\AuthAPI.csproj.Up2Date
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\AuthAPI.dll
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\refint\AuthAPI.dll
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\AuthAPI.pdb
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\AuthAPI.genruntimeconfig.cache
 D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\ref\AuthAPI.dll
+D:\Dev\PokemonApp\AuthAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

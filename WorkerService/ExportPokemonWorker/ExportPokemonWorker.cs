@@ -21,7 +21,7 @@ namespace WorkerService.ExportPokemonWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var queueName = "Pokemon_Export_Worker";
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = "pokemon-rabbit", Port = 5672 };
             var connection = await factory.CreateConnectionAsync();
             var channel = await connection.CreateChannelAsync();
 

@@ -1,0 +1,98 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong!Pass123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserverdata:/var/opt/mssql
+    networks:
+      - pokemon-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: pokemon-rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - pokemon-network
+
+  redis:
+    image: redis:latest
+    container_name: pokemon-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - pokemon-network
+
+  authapi:
+    build:
+      context: .
+      dockerfile: AuthAPI/Dockerfile
+    image: authapi:latest
+    container_name: authapi
+    ports:
+      - "5088:8080"
+    environment:
+      ConnectionStrings__MyAuthDb: "Server=sqlserver,1433;Database=AuthDb;User Id=sa;Password=YourStrong!Pass123;Encrypt=False;"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - sqlserver
+    networks:
+      - pokemon-network
+
+  pokemonapi:
+    build: 
+      context: .
+      dockerfile: PokemonAPI/Dockerfile
+    image: pokemonapi:latest
+    container_name: pokemonapi
+    ports:
+      - "5206:8080"
+    environment:
+      ConnectionStrings__MyDb: "Server=sqlserver,1433;Database=PokemonDb;User Id=sa;Password=YourStrong!Pass123;Encrypt=False;"
+      ConnectionStrings__RedisCache: "redis:6379"
+      JWT__Authority: "http://authapi:8080"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - sqlserver
+      - authapi
+      - rabbitmq
+      - redis
+    networks:
+      - pokemon-network
+
+  worker:
+    build: 
+      context: .
+      dockerfile: WorkerService/Dockerfile
+    image: workerservice:latest
+    container_name: exportpokemonworker
+    environment:
+      ConnectionStrings__MyDb: "Server=sqlserver,1433;Database=PokemonDb;User Id=sa;Password=YourStrong!Pass123;Encrypt=False;"
+      ConnectionStrings__RedisCache: "redis:6379"
+      RabbitMQ__Host: "rabbitmq"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - redis 
+    networks:
+      - pokemon-network
+
+networks:
+  pokemon-network:
+
+volumes:
+  sqlserverdata:

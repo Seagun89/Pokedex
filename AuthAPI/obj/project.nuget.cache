@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "NIrDDrPYRBc=",
+  "dgSpecHash": "t977iAyxKaM=",
   "success": true,
   "projectFilePath": "D:\\Dev\\PokemonApp\\AuthAPI\\AuthAPI.csproj",
   "expectedPackageFiles": [
@@ -52,6 +52,7 @@
     "D:\\NuGetPackages\\microsoft.identitymodel.tokens\\8.0.1\\microsoft.identitymodel.tokens.8.0.1.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.openapi\\1.6.23\\microsoft.openapi.1.6.23.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
+    "D:\\NuGetPackages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512",
     "D:\\NuGetPackages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "D:\\NuGetPackages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "D:\\NuGetPackages\\swashbuckle.aspnetcore\\9.0.1\\swashbuckle.aspnetcore.9.0.1.nupkg.sha512",

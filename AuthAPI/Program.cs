@@ -17,7 +17,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AuthDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyAuthDb")));
+    options.UseSqlServer(
+     builder.Configuration.GetConnectionString("MyAuthDb"),
+     sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 // Configures Identity Services for user authentication and authorization
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -65,6 +67,12 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuthDBContext>();
+    db.Database.Migrate(); // Creates DB if it doesn't exist & applies migrations
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,7 +80,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "My AuthAPI V1"));
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
