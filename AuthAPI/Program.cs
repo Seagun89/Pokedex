@@ -57,13 +57,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddDefaultPolicy(policy =>
-//        policy.AllowAnyOrigin()
-//              .AllowAnyMethod()
-//              .AllowAnyHeader());
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -84,7 +84,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-//app.UseCors();
+app.UseCors();
 app.MapControllers();
 
 app.Run();

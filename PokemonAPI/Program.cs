@@ -111,7 +111,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<PokemonDBContext>();
-    db.Database.Migrate(); // Creates DB if it doesn't exist & applies migrations
+    db.Database.Migrate(); // Creates DB if it doesn't exist & applies migrations. This allows for docker to spin up a db container 
 }
 
 // Configure the HTTP request pipeline.
@@ -121,11 +121,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "My PokemonAPI V1")); //Configures swagger UI endpoint
 }
 
-app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
 //app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
-app.UseCors();
+app.UseMiddleware<CustomExceptionHandlerMiddleware>(); // Adds middleware for handling exceptions globally, allowing you to catch and handle exceptions in a centralized manner, improving error handling and providing consistent error responses across the application. This middleware can be configured to log exceptions, return custom error messages, or perform other actions when an unhandled exception occurs during the processing of a request.
 app.MapControllers();  // Maps controller endpoints to the app request pipeline
 app.Run(); 
