@@ -14,8 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–4 complete \
-🔄 Phase 6 (create images of my codebase to run on docker)
-Considering adding CORS and ratelimiting
+🔄 Phase 7 (First I'm brushing up on Typescript syntax then need to decide whether I want to use Angular, React, or Vue)
 
 ## Architecture Path
 
@@ -39,10 +38,10 @@ Considering adding CORS and ratelimiting
   + [x] Background worker services 
   #### *Phase 6*
   + [x] Microservices architecture
-  + [ ] Docker
-  + [ ] Azure
+  + [x] Docker
   #### *Phase 7*
   + [ ] Angular Frontend UI
+  + [ ] Azure
   #### *Phase 8*
   + [ ] AI integration
 
