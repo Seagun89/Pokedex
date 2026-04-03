@@ -174,8 +174,12 @@ Example payload for creating a Pokémon with abilities.
     + Message = binary blobs of data (use JsonSerializer to convert object into string then Encoding.UTF8.GetBytes into bytes)
     + Can instantiate publisher (singleton service) connection and channel within a consumer (backgroundservice) execute method hosted using AddHostedService
     + Can survey queues and channels/connections by putting localhost:port into browser
-
-
+- Docker:
+    + For containers to communicate with one another you need to create a network then connect containers to it
+      > docker network create -d bridge my-bridge-network \
+      > docker network connect [OPTIONS] NETWORK CONTAINER
+    + Docker-Compose is a tool for defining and running multi-container applications. Acts as an orchestrator for single-host machines.
+    + Docker Files uses layers to set up images
 
 
 
