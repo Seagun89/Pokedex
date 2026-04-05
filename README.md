@@ -13,7 +13,7 @@
   > I added the project to Git after base CRUD creation.
 
 ## Current Status
-✅ Phase 1–4 complete \
+✅ Phase 1–6 complete \
 🔄 Phase 7 (First I'm brushing up on Typescript syntax then need to decide whether I want to use Angular, React, or Vue)
 
 ## Architecture Path
