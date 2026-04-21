@@ -14,7 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–6 complete \
-🔄 Phase 7 Using react for library and making another repo my-pokemon-app for UI
+🔄 Phase 7 Using react for library and making another repo my-pokedex-app for UI
 
 ## Architecture Path
 
