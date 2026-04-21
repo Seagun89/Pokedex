@@ -14,7 +14,7 @@
 
 ## Current Status
 ✅ Phase 1–6 complete \
-🔄 Phase 7 (First I'm brushing up on Typescript syntax then need to decide whether I want to use Angular, React, or Vue)
+🔄 Phase 7 Using react for library and making another repo my-pokemon-app for UI
 
 ## Architecture Path
 
@@ -40,7 +40,7 @@
   + [x] Microservices architecture
   + [x] Docker
   #### *Phase 7*
-  + [ ] Angular Frontend UI
+  + [ ] React Frontend UI
   + [ ] Azure
   #### *Phase 8*
   + [ ] AI integration
@@ -62,7 +62,7 @@
   - Docker
 
 **Future FrontEnd** 
-  - Angular Framework
+  - React Framework
   - TypeScript
   
 **Future Stack Additions**
