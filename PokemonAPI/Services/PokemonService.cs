@@ -64,6 +64,7 @@ namespace PokemonAPI.Services
 
             var pokemon = await GetPokemonOrThrowAsync(id);
             pokemon.Name = UpdateRequest.Name ?? pokemon.Name;
+            pokemon.PokemonId = UpdateRequest.PokemonId;
             pokemon.Height = UpdateRequest.Height;
             pokemon.Weight = UpdateRequest.Weight;
             pokemon.Abilities.ForEach(a =>

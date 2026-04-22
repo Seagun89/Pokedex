@@ -9,7 +9,7 @@ namespace PokemonAPI.Infrastructure.Mappers
         {
             return new PokemonResponseDto // mapping properties from pokemon entity to response dto, only including properties that we want to expose in the PokemonAPI response
             {
-                Id = pokemonModel.Id,
+                Id = pokemonModel.PokemonId,
                 Name = pokemonModel.Name,
                 AbilityType = pokemonModel.AbilityType
             };
@@ -19,6 +19,7 @@ namespace PokemonAPI.Infrastructure.Mappers
             return new Pokemon 
             {
                 Name = pokemonRequestDto.Name,
+                PokemonId = pokemonRequestDto.PokemonId,
                 Height = pokemonRequestDto.Height,
                 Weight = pokemonRequestDto.Weight,
                 AbilityType = pokemonRequestDto.AbilityType,

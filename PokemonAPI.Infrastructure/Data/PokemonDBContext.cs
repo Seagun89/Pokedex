@@ -5,7 +5,7 @@ namespace PokemonAPI.Infrastructure.Data
 {
     public class PokemonDBContext : DbContext // Represents the database context for the application, manages the connection to the database and provides access to the Pokemon table through the DbSet<Pokemon> property, also inherits from IdentityDbContext to integrate ASP.NET Core Identity for user authentication and authorization
     {
-        public PokemonDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions) {}
+        public PokemonDBContext(DbContextOptions<PokemonDBContext> dbContextOptions) : base(dbContextOptions) {}
         public DbSet<Pokemon> Pokemon { get; set;} // Represents the pokemon table in the DB using the Pokemon model
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -8,6 +8,8 @@ namespace SharedDtos.Dtos
         [MinLength(4), MaxLength(20)]
         public string Name { get; set; } = string.Empty;
         [Required]
+        public int PokemonId { get; set; }  
+        [Required]
         public float Height { get; set; }
         [Required]
         public float Weight { get; set; }

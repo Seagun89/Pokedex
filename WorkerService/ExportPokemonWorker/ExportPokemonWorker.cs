@@ -12,16 +12,19 @@ namespace WorkerService.ExportPokemonWorker
     {
         private readonly ILogger<ExportPokemonWorker> _logger;
         private readonly IServiceProvider _serviceProvider;
-        public ExportPokemonWorker(ILogger<ExportPokemonWorker> logger, IServiceProvider serviceProvider)
+        private readonly IConfiguration _configuration;
+        public ExportPokemonWorker(ILogger<ExportPokemonWorker> logger, IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _configuration = configuration;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var hostName = _configuration["Rabbit_MQ:HostName"] ?? "localhost";
             var queueName = "Pokemon_Export_Worker";
-            var factory = new ConnectionFactory() { HostName = "pokemon-rabbit", Port = 5672 };
+            var factory = new ConnectionFactory() { HostName = hostName, Port = 5672 };
             var connection = await factory.CreateConnectionAsync();
             var channel = await connection.CreateChannelAsync();
 

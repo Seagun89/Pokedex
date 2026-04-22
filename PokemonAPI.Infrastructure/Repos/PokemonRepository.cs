@@ -51,7 +51,7 @@ namespace PokemonAPI.Infrastructure.Repos
             var pokemon = await _context.Pokemon
             .AsNoTracking()
             .Include(p => p.Abilities)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.PokemonId == id);
 
             await _cache.SetStringAsync($"pokemon_:{id}", JsonSerializer.Serialize(pokemon ?? throw new ArgumentNullException("Pokemon is doesn't exist.")),  new DistributedCacheEntryOptions() 
             {

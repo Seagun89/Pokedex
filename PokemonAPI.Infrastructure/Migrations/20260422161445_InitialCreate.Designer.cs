@@ -11,8 +11,8 @@ using PokemonAPI.Infrastructure.Data;
 namespace PokemonAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(PokemonDBContext))]
-    [Migration("20260327015545_InitialPokemon")]
-    partial class InitialPokemon
+    [Migration("20260422161445_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,6 +74,9 @@ namespace PokemonAPI.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PokemonId")
+                        .HasColumnType("int");
 
                     b.Property<float>("Weight")
                         .HasColumnType("real");

@@ -25,8 +25,8 @@ namespace PokemonAPI.Controllers
             var pokemonList = await _pokemonService.GetAllPokemonAsync(query);
             return Ok(pokemonList);
         }
-        
-        [Authorize(Policy = "CanViewPokemon")]
+
+        [AllowAnonymous]
         [HttpGet("PokeDex/GetPokemon/{id:int}")] // route constraint to ensure id is an integer
         public async Task<IActionResult> GetPokemonByIdAsync([FromRoute] int id)
         {

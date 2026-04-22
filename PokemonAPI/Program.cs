@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); // Adds services for controllers to the container
 builder.Services.AddSingleton<IRabbitMQPublisher<ExportPokemonMessage>, RabbitMQPublisher<ExportPokemonMessage>>(sp =>
 {
-    var publisher = new RabbitMQPublisher<ExportPokemonMessage>();
+    var publisher = new RabbitMQPublisher<ExportPokemonMessage>(builder.Configuration);
     publisher.CreateAsync("Pokemon_Export_Worker").GetAwaiter().GetResult();
     return publisher;
 }); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
@@ -87,6 +87,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 {
+    policy.WithOrigins("http://localhost:3000");
     policy.AllowCredentials();
     policy.AllowAnyHeader();
     policy.AllowAnyMethod();
@@ -107,7 +108,7 @@ builder.Services.AddRateLimiter(options =>
 );
 
 var app = builder.Build();
-
+//TODO: dont forget to rerun docker compose due to making updates with host name config for rabbitmq
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<PokemonDBContext>();

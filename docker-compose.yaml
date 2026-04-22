@@ -82,7 +82,7 @@ services:
     environment:
       ConnectionStrings__MyDb: "Server=sqlserver,1433;Database=PokemonDb;User Id=sa;Password=YourStrong!Pass123;Encrypt=False;"
       ConnectionStrings__RedisCache: "redis:6379"
-      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__HostName: "rabbitmq"
       ASPNETCORE_ENVIRONMENT: "Development"
     depends_on:
       - sqlserver

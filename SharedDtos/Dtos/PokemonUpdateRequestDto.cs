@@ -6,6 +6,8 @@ namespace SharedDtos.Dtos
         [Required]
         public string? Name { get; set; }
         [Required]
+        public int PokemonId { get; set; }
+        [Required]
         public float Height { get; set; }
         [Required]
         public float Weight { get; set; }
