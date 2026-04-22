@@ -1,4 +1,4 @@
-# Pokemon API – (Frontend will begin after completion of API Backend)
+# Pokemon API – (Frontend Repo: https://github.com/Seagun89/my-pokedex-app)
 
 ## Description 
   A production-style RESTful API built with ASP.NET Core designed to 
@@ -14,7 +14,14 @@
 
 ## Current Status
 ✅ Phase 1–6 complete \
-🔄 Phase 7 Using react for library and making another repo my-pokedex-app for UI
+🔄 Phase 7 React UI scaffolding \
+TODO:\
+Making pokedex distinct between users: \
+Add user to PokemonRequestDto, and to pokemon model\
+When the user adds a pokemon it would look through session data which saves jwt and user then grab saved username pass into body for pokemonRequestDto\
+Would need to sort by user to get user only pokemon so add user to QueryPokemonRequest\
+User will be nullorwhitespace which pulls all pokemon but in the frontend default will consider username (const userName = sessionStorage.getItem("User");) for query and only return user pokemon list\
+Also UPDATE DOCKER COMPOSE for hostname env changes\
 
 ## Architecture Path
 
