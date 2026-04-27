@@ -10,7 +10,7 @@ namespace PokemonAPI.Infrastructure.Repos
         public Task<List<PokemonResponseDto>> GetAllPokemonAsync(QueryPokemonRequest query);
         public Task AddPokemonAsync(PokemonRequestDto pokemon);
         public Task DeletePokemonAsync(Pokemon pokemon);
-        public Task<bool> PokemonExistsAsync(string name);
+        public Task<bool> PokemonExistsAsync(string name, string user);
         public Task SaveChangesAsync();
         public Task<List<PokemonResponseDto>> ExportAllPokemonAsync();
     }

@@ -100,7 +100,7 @@ namespace PokemonAPI.Tests
                 }
             };
 
-            _pokemonRepositoryMock.Setup(x => x.PokemonExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _pokemonRepositoryMock.Setup(x => x.PokemonExistsAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             // Act
             var actual = Assert.ThrowsAsync<InvalidOperationException>(() => _pokemonServiceMock.AddPokemonAsync(pokemon))?.Result.Message;
@@ -130,7 +130,7 @@ namespace PokemonAPI.Tests
                 }
             };
 
-            _pokemonRepositoryMock.Setup(x => x.PokemonExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+            _pokemonRepositoryMock.Setup(x => x.PokemonExistsAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(false);
             _pokemonRepositoryMock.Setup(x => x.AddPokemonAsync(It.IsAny<PokemonRequestDto>())).Returns(Task.CompletedTask);
 
             // Act 

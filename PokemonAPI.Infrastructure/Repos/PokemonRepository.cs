@@ -32,7 +32,7 @@ namespace PokemonAPI.Infrastructure.Repos
             }
             
             var pokemon = _context.Pokemon
-            //.AsNoTracking() // improves performance by not tracking changes to the entities, since we are only reading data and not modifying it, this can reduce memory usage and speed up query execution, especially when dealing with large datasets
+            .AsNoTracking() // improves performance by not tracking changes to the entities, since we are only reading data and not modifying it, this can reduce memory usage and speed up query execution, especially when dealing with large datasets
             .Include(p => p.Abilities) // Include the related Abilities for each Pokemon
             .AsQueryable(); // primes query for filtering based on query parameters
 
@@ -80,9 +80,9 @@ namespace PokemonAPI.Infrastructure.Repos
         }
         
 #region Helper methods
-        public async Task<bool> PokemonExistsAsync(string name)
+        public async Task<bool> PokemonExistsAsync(string name, string user)
         {
-            return await _context.Pokemon.AsNoTracking().Where(p => p.Name == name).AnyAsync();
+            return await _context.Pokemon.AsNoTracking().Where(p => p.Name == name && p.CreatedBy == user).AnyAsync();
         }
 
         public async Task SaveChangesAsync()
@@ -93,6 +93,10 @@ namespace PokemonAPI.Infrastructure.Repos
         public async Task<List<PokemonResponseDto>> FilterPokemonAsync(IQueryable<Pokemon> pokemon, QueryPokemonRequest query)
         {
             //TODO: Turn if statements into switch statements 
+            if (!string.IsNullOrWhiteSpace(query.Username))
+            {
+                pokemon = pokemon.Where(pokemon => pokemon.CreatedBy == query.Username);
+            }
             if (!string.IsNullOrWhiteSpace(query.AbilityType))
             {
                 pokemon = pokemon.Where(p => p.AbilityType.Contains(query.AbilityType));
@@ -135,12 +139,12 @@ namespace PokemonAPI.Infrastructure.Repos
 
             await _cache.SetStringAsync("pokemonQuery_", JsonSerializer.Serialize(query), new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(20)
             });
 
             await _cache.SetStringAsync("pokemonList_", JsonSerializer.Serialize(pokemonList), new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(20) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
             });
             
             return pokemonList;

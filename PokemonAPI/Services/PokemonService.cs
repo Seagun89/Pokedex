@@ -23,7 +23,8 @@ namespace PokemonAPI.Services
             if (pokemon == null) throw new ArgumentNullException(nameof(pokemon));
 
             // Checking 
-            var pokemonExists = await _pokemonRepository.PokemonExistsAsync(pokemon.Name);
+            // Decided each users can have the same pokemon
+            var pokemonExists = await _pokemonRepository.PokemonExistsAsync(pokemon.Name, pokemon.CreatedBy);
             if(pokemonExists) throw new InvalidOperationException("Pokemon already exists");
             
             // Process request and add pokemon into database
@@ -67,6 +68,7 @@ namespace PokemonAPI.Services
             pokemon.PokemonId = UpdateRequest.PokemonId;
             pokemon.Height = UpdateRequest.Height;
             pokemon.Weight = UpdateRequest.Weight;
+            pokemon.CreatedBy = UpdateRequest.Username ?? string.Empty;
             pokemon.Abilities.ForEach(a =>
             {
                 var updatedAbility = UpdateRequest.Abilities.First(ua => ua.Name == a.Name);

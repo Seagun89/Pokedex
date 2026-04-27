@@ -8,6 +8,7 @@ namespace PokemonAPI.Infrastructure.Models
         public float Height { get; set; }
         public float Weight { get; set; }
         public string AbilityType { get; set; } = string.Empty;
+        public string CreatedBy { get; set; } = string.Empty;
         public List<Ability> Abilities { get; set; } = new List<Ability>();
     }
 }

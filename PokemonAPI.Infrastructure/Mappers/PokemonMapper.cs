@@ -23,6 +23,7 @@ namespace PokemonAPI.Infrastructure.Mappers
                 Height = pokemonRequestDto.Height,
                 Weight = pokemonRequestDto.Weight,
                 AbilityType = pokemonRequestDto.AbilityType,
+                CreatedBy = pokemonRequestDto.CreatedBy,
                 Abilities = pokemonRequestDto.Abilities.Select( a => new Ability
                     {
                         Name = a.Name,

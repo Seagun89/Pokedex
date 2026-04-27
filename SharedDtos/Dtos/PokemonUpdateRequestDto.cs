@@ -13,6 +13,7 @@ namespace SharedDtos.Dtos
         public float Weight { get; set; }
         [Required]
         public string? AbilityType { get; set; }
+        public string? Username { get; set; }
         [Required]
         public List<AbilityRequestDto> Abilities { get; set; } = new List<AbilityRequestDto>();
     }
