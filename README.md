@@ -16,12 +16,9 @@
 ✅ Phase 1–6 complete \
 🔄 Phase 7 React UI scaffolding \
 TODO:\
-Making pokedex distinct between users: \
-Add user to PokemonRequestDto, and to pokemon model\
-When the user adds a pokemon it would look through session data which saves jwt and user then grab saved username pass into body for pokemonRequestDto\
-Would need to sort by user to get user only pokemon so add user to QueryPokemonRequest\
-User will be nullorwhitespace which pulls all pokemon but in the frontend default will consider username (const userName = sessionStorage.getItem("User");) for query and only return user pokemon list\
-Also UPDATE DOCKER COMPOSE for hostname env changes\
+Creating the Add pokemon page:\
+make a form which accepts input for the pokemonrequestDto schema\
+"createdBy": "string", // this is retrieved from sessiondata storage\
 
 ## Architecture Path
 
@@ -69,7 +66,7 @@ Also UPDATE DOCKER COMPOSE for hostname env changes\
   - Docker
 
 **Future FrontEnd** 
-  - React Framework
+  - React Library
   - TypeScript
   
 **Future Stack Additions**
@@ -186,7 +183,11 @@ Example payload for creating a Pokémon with abilities.
       > docker network connect [OPTIONS] NETWORK CONTAINER
     + Docker-Compose is a tool for defining and running multi-container applications. Acts as an orchestrator for single-host machines.
     + Docker Files uses layers to set up images
-
+- React: 
+    + UseState
+    + UseEffect
+    + React.FC
+    + Routes
 
 
 
