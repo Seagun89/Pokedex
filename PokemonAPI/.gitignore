@@ -6,10 +6,6 @@ obj/
 *.exe
 *.dll
 
-#Node/Angular
-node_modules/
-.angular/
-
 #VSCode
 .vscode/
 
