@@ -16,9 +16,9 @@
 ✅ Phase 1–6 complete \
 🔄 Phase 7 React UI scaffolding \
 TODO:\
-Creating the Add pokemon page:\
-make a form which accepts input for the pokemonrequestDto schema\
-"createdBy": "string", // this is retrieved from sessiondata storage\
+After submission of new pokemon add a confirmation pop up\
+Add a filter button component\
+Add a search bar
 
 ## Architecture Path
 
@@ -188,7 +188,8 @@ Example payload for creating a Pokémon with abilities.
     + UseEffect
     + React.FC
     + Routes
-
+    + React.ReactNodes 
+    + react-router-dom ( Link )
 
 
 
