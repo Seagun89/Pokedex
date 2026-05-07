@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SharedDtos.HelperObjects;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
+using System.Numerics;
 
 namespace PokemonAPI.Infrastructure.Repos
 {
@@ -131,20 +132,21 @@ namespace PokemonAPI.Infrastructure.Repos
                     pokemon = query.IsDescending ? pokemon = pokemon.OrderByDescending(p => p.AbilityType) : pokemon.OrderBy(p => p.AbilityType);
                 }
             }
-
+            int pNumber = Int32.Parse(query.PageNumber);
+            int pSize = Int32.Parse(query.PageSize);
             // Adding pagination based on query parameters for GetAllPokemon endpoint, allows clients to paginate pokemon by using query parameters, allows for more efficient data retrieval and improved performance when dealing with large datasets
-            pokemon = pokemon.Skip((query.PageNumber.GetValueOrDefault() - 1) * query.PageSize.GetValueOrDefault()).Take(query.PageSize.GetValueOrDefault());
+            pokemon = pokemon.Skip((pNumber - 1) * pSize).Take(pSize);
 
             var pokemonList = await pokemon.Select(pokemon => pokemon.MapToPokemonResponseDto()).ToListAsync();
 
             await _cache.SetStringAsync("pokemonQuery_", JsonSerializer.Serialize(query), new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(20)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
             });
 
             await _cache.SetStringAsync("pokemonList_", JsonSerializer.Serialize(pokemonList), new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(20) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2) // Cache expires after 10 minutes, allows for improved performance while ensuring data is not stale for too long
             });
             
             return pokemonList;

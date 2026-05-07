@@ -99,9 +99,9 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: policy.User.Identity?.Name ?? policy.Connection.RemoteIpAddress?.ToString(),
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 2,
+                PermitLimit = 5,
                 QueueLimit = 10,
-                Window = TimeSpan.FromSeconds(20)
+                Window = TimeSpan.FromSeconds(10)
             }
         )
     )
