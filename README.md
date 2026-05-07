@@ -16,8 +16,7 @@
 ✅ Phase 1–6 complete \
 🔄 Phase 7 React UI scaffolding \
 TODO:\
-After submission of new pokemon add a confirmation pop up\
-Add a filter button component\
+Add pagination\
 Add a search bar
 
 ## Architecture Path
@@ -190,6 +189,22 @@ Example payload for creating a Pokémon with abilities.
     + Routes
     + React.ReactNodes 
     + react-router-dom ( Link )
+
+## Screenshots
+- Login Page
+<img width="1491" height="843" alt="image" src="https://github.com/user-attachments/assets/177f8e4c-d258-40fd-9410-66594a863750" />
+- Register Page
+<img width="1112" height="712" alt="image" src="https://github.com/user-attachments/assets/2da57576-e1ef-487e-89c9-508120cc9002" />
+- Home page/ My pokemon list page 1
+<img width="1907" height="822" alt="image" src="https://github.com/user-attachments/assets/50b35fb3-5153-498d-82a6-e17fe65032ac" />
+- My pokemon list page 2
+<img width="1900" height="809" alt="image" src="https://github.com/user-attachments/assets/a01d6519-80bd-4d2a-80c6-794706fab4aa" />
+- Add pokemon page
+<img width="1896" height="840" alt="image" src="https://github.com/user-attachments/assets/90419b4b-5a78-4cfb-ac9a-29c02b46cf66" />
+
+
+
+
 
 
 
