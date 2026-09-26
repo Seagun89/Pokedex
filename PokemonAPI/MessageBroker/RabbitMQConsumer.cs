@@ -19,7 +19,17 @@ namespace PokemonAPI.MessageBroker
         {
             _configuration = configuration;
             var hostName = _configuration["Rabbit_MQ:HostName"] ?? "localhost";
-            _factory = new ConnectionFactory() { HostName = hostName, Port = 5672 };
+            var port = int.Parse(_configuration["Rabbit_MQ:Port"] ?? "5672");
+            var username = _configuration["Rabbit_MQ:Username"] ?? "guest";
+            var password = _configuration["Rabbit_MQ:Password"] ?? "guest";
+
+            _factory = new ConnectionFactory() 
+            { 
+                HostName = hostName, 
+                Port = port,
+                UserName = username,
+                Password = password
+            };
         }
 
         public async Task CreateAsync(string queueName)

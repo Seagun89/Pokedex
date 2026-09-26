@@ -23,8 +23,19 @@ namespace WorkerService.ExportPokemonWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var hostName = _configuration["Rabbit_MQ:HostName"] ?? "localhost";
+            var port = int.Parse(_configuration["Rabbit_MQ:Port"] ?? "5672");
+            var username = _configuration["Rabbit_MQ:Username"] ?? "guest";
+            var password = _configuration["Rabbit_MQ:Password"] ?? "guest";
             var queueName = "Pokemon_Export_Worker";
-            var factory = new ConnectionFactory() { HostName = hostName, Port = 5672 };
+
+            var factory = new ConnectionFactory() 
+            { 
+                HostName = hostName, 
+                Port = port,
+                UserName = username,
+                Password = password
+            };
+
             var connection = await factory.CreateConnectionAsync();
             var channel = await connection.CreateChannelAsync();
 
