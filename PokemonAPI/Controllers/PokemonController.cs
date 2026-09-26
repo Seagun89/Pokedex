@@ -12,9 +12,11 @@ namespace PokemonAPI.Controllers
     public class PokemonController : ControllerBase // Controller class handles incoming HTTP requests, and uses pokemonservice to perform operations on the pokemon data (business logic), and returns appropriate HTTP responses
     {
         private readonly IPokemonService _pokemonService;
-        public PokemonController(IPokemonService pokemonService)
+        private readonly IChatBotService _chatBotService;
+        public PokemonController(IPokemonService pokemonService, IChatBotService chatBotService)
         {
             _pokemonService = pokemonService;
+            _chatBotService = chatBotService;
         }
 
         [AllowAnonymous]
@@ -50,6 +52,14 @@ namespace PokemonAPI.Controllers
             return Accepted("Pokemon export initiated successfully"); // returns 202 Accepted status code, indicating that the request has been accepted for processing, but the processing has not been completed yet, suitable for long-running operations like exporting data
         }
 
+        [HttpPost("PokeDex/ChatBot")]
+        public async Task<IActionResult> ChatBot([FromBody] ChatBotRequestDto request)
+        {
+            var response = await _chatBotService.ChatBotAsync(request);
+            return Ok(response);
+        }
+
+
         [HttpPut("PokeDex/UpdatePokemon/{id:int}")]
         public async Task<IActionResult> UpdatePokemonAsync([FromBody] PokemonUpdateRequestDto UpdateRequest, [FromRoute] int id)
         {
@@ -61,6 +71,7 @@ namespace PokemonAPI.Controllers
         public async Task<IActionResult> DeletePokemonAsync([FromRoute] int id)
         {
             await _pokemonService.DeletePokemonAsync(id);
+     
             return Ok("Pokemon deleted successfully");
         }
     }

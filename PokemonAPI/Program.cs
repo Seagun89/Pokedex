@@ -21,8 +21,18 @@ builder.Services.AddSingleton<IRabbitMQPublisher<ExportPokemonMessage>, RabbitMQ
     publisher.CreateAsync("Pokemon_Export_Worker").GetAwaiter().GetResult();
     return publisher;
 }); // Registers the RabbitMQPublisher as a singleton service, ensuring that only one instance of the publisher is created and shared across the entire application, which is suitable for services that manage shared resources like message queues and can help improve performance and reduce resource usage by reusing the same instance.
+builder.Services.AddSingleton<IRabbitMQPublisher<ChatBotRequestDto>, RabbitMQPublisher<ChatBotRequestDto>> (sp =>
+{
+    return new RabbitMQPublisher<ChatBotRequestDto>(builder.Configuration);
+});
+builder.Services.AddSingleton<IRabbitMQConsumer<ChatBotResponseDto>, RabbitMQConsumer<ChatBotResponseDto>>(sp =>
+{
+    return new RabbitMQConsumer<ChatBotResponseDto>(builder.Configuration);
+});
+builder.Services.AddHostedService<ChatBotRabbitMQInitializationService>();
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>(); // Registers the PokemonRepository as the implementation for the IPokemonRepository interface why scoped? Because we want a new instance of the repository to be created for each request, ensuring that database contexts are not shared across requests and preventing potential issues with concurrent access.
 builder.Services.AddScoped<IPokemonService, PokemonService>(); // Registers the PokemonService as the implementation for the IPokemonService interface why scoped? Because we want a new instance of the service for each requested
+builder.Services.AddScoped<IChatBotService, ChatBotService>(); // Registers the ChatBotService implementation
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PokemonAPI", Version = "v1" });
 
