@@ -46,7 +46,8 @@ namespace AuthAPI.Services
                 }
             }
             else if (createUserResult.Errors.Any()) {
-                throw new InvalidOperationException("An error occurred while creating the user.");
+                var errorMessages = string.Join(", ", createUserResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"An error occurred while creating the user: {errorMessages}");
             }
         }
 
