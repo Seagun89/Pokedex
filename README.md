@@ -84,6 +84,9 @@ Add a search bar
   <img width="1896" height="840" alt="image" src="https://github.com/user-attachments/assets/90419b4b-5a78-4cfb-ac9a-29c02b46cf66" />
   - Oakbot Request Verification
   <img width="1543" height="623" alt="image" src="https://github.com/user-attachments/assets/8d04a2fc-80ac-429a-98cc-fd0803b9eb1b" />
+  - Oakbot UI within Application
+  <img width="1878" height="933" alt="image" src="https://github.com/user-attachments/assets/681e1f4c-29c8-4064-9335-a18d923a9c34" />
+
 
 
 ## Example HTTP API endpoints
