@@ -53,8 +53,15 @@ namespace PokemonAPI.MessageBroker
 
         public async ValueTask DisposeAsync()
         {
-            await _channel.CloseAsync();
-            await _connection.CloseAsync();
+            if (_channel != null)
+            {
+                await _channel.CloseAsync();
+            }
+
+            if (_connection != null)
+            {
+                await _connection.CloseAsync();
+            }
         }
     }
 }

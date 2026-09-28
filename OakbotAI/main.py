@@ -6,10 +6,9 @@ from RabbitMQConnection import RabbitMQConnection
 async def main() -> None:
     oakbot = OakBot()
     rabbit = RabbitMQConnection(bot=oakbot)
-    await rabbit.connect()
-    await rabbit.start_consuming()
-
     try:
+        await rabbit.connect()
+        await rabbit.start_consuming()
         await asyncio.Event().wait()
     finally:
         await rabbit.close()

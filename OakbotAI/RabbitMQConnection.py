@@ -14,11 +14,12 @@ class RabbitMQConnection:
         self.port = int(os.getenv("RABBITMQ_PORT", "5672"))
         self.username = os.getenv("RABBITMQ_USERNAME", "guest")
         self.password = os.getenv("RABBITMQ_PASSWORD", "guest")
-        self.request_queue_name = "PokeDex_ChatBot_Requests"
+        self.request_queue_name = "PokeDex_ChatBot_Request"
         self.response_queue_name = "PokeDex_ChatBot_Response"
         self.connection = None
         self.channel = None
         self.request_queue = None
+        self.response_queue = None
         self.bot = bot
 
     async def connect(self) -> None:
@@ -32,10 +33,17 @@ class RabbitMQConnection:
             self.request_queue = await self.channel.declare_queue(
                 self.request_queue_name,
                 durable=True,
+                arguments={"x-queue-type": "quorum"},
+            )
+            self.response_queue = await self.channel.declare_queue(
+                self.response_queue_name,
+                durable=True,
+                arguments={"x-queue-type": "quorum"},
             )
             print(f"Connected to RabbitMQ at {self.host}:{self.port}")
         except Exception as exc:
             print(f"Error connecting to RabbitMQ: {exc}")
+            raise
 
     async def publish_response(self, payload: dict) -> None:
         if self.channel is None:
@@ -63,8 +71,8 @@ class RabbitMQConnection:
             reply = self.bot.get_reply(user_message)
 
             response_payload = {
-                "CorrelationId": payload.get("CorrelationId"), # correlation id 
-                "Message": reply, # message
+                "CorrelationId": payload.get("CorrelationId"),
+                "Data": {"Message": reply}, # message
             }
             await self.publish_response(response_payload)
 
