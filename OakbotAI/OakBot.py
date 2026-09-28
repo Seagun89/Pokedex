@@ -1,9 +1,19 @@
 import os
 from openai import OpenAI
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 class OakBot:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "OPENAI_API_KEY is not set. Add your OpenAI API key to the .env file."
+            )
+
+        self.client = OpenAI(api_key=api_key)
 
     def get_reply(self, message: str) -> str:
         response = self.client.responses.create(
