@@ -13,8 +13,8 @@
   > I added the project to Git after base CRUD creation.
 
 ## Current Status
-✅ Phase 1–6 complete \
-🔄 Phase 7 React UI scaffolding \
+✅ Phase 7 complete \
+🔄 Phase 8 AI Oakbot setup  (API keys, integration with aio-pika (rabbitMQ)) \
 TODO:\
 Add pagination\
 Add a search bar
@@ -43,8 +43,7 @@ Add a search bar
   + [x] Microservices architecture
   + [x] Docker
   #### *Phase 7*
-  + [ ] React Frontend UI
-  + [ ] Azure
+  + [X] React Frontend UI
   #### *Phase 8*
   + [ ] AI integration
 
@@ -83,6 +82,9 @@ Add a search bar
   <img width="1900" height="809" alt="image" src="https://github.com/user-attachments/assets/a01d6519-80bd-4d2a-80c6-794706fab4aa" />
   - Add pokemon page
   <img width="1896" height="840" alt="image" src="https://github.com/user-attachments/assets/90419b4b-5a78-4cfb-ac9a-29c02b46cf66" />
+  - Oakbot Request Verification
+  <img width="1543" height="623" alt="image" src="https://github.com/user-attachments/assets/8d04a2fc-80ac-429a-98cc-fd0803b9eb1b" />
+
 
 ## Example HTTP API endpoints
   - GET api/Pokemon/PokeDex/All  **Gets all pokemon*
