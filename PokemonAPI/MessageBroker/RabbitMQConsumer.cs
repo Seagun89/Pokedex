@@ -75,34 +75,43 @@ namespace PokemonAPI.MessageBroker
 
         private async Task ConsumeMessagesAsync()
         {
-            var consumer = new AsyncEventingBasicConsumer(_channel);
-
-            consumer.ReceivedAsync += async (model, ea) =>
+            try
             {
-                try
-                {
-                    var body = ea.Body.ToArray();
-                    var message = Encoding.UTF8.GetString(body);
-                    var response = JsonSerializer.Deserialize<MessageWrapper<T>>(message);
+                var consumer = new AsyncEventingBasicConsumer(_channel);
 
-                    if (response?.CorrelationId != null && 
-                        _pendingRequests.TryRemove(response.CorrelationId, out var tcs))
+                consumer.ReceivedAsync += async (model, ea) =>
+                {
+                    try
                     {
-                        tcs.SetResult(response.Data);
-                        Console.WriteLine($" [x] Received response for correlation ID: {response.CorrelationId}");
+                        var body = ea.Body.ToArray();
+                        var message = Encoding.UTF8.GetString(body);
+                        var response = JsonSerializer.Deserialize<MessageWrapper<T>>(message);
+
+                        if (response?.CorrelationId != null && 
+                            _pendingRequests.TryRemove(response.CorrelationId, out var tcs))
+                        {
+                            tcs.SetResult(response.Data);
+                            Console.WriteLine($" [x] Received response for correlation ID: {response.CorrelationId}");
+                        }
+
+                        // Acknowledge the message
+                        await _channel.BasicAckAsync(ea.DeliveryTag, false);
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($" [!] Error processing message: {ex.Message}");
+                        await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
+                    }
+                };
 
-                    // Acknowledge the message
-                    await _channel.BasicAckAsync(ea.DeliveryTag, false);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($" [!] Error processing message: {ex.Message}");
-                    await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
-                }
-            };
-
-            await _channel.BasicConsumeAsync(queue: _queueName, autoAck: false, consumer: consumer);
+                Console.WriteLine($" [*] Started consuming from queue '{_queueName}'");
+                await _channel.BasicConsumeAsync(queue: _queueName, autoAck: false, consumer: consumer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($" [!] Fatal error in consumer: {ex.Message}");
+                throw;
+            }
         }
 
         public async ValueTask DisposeAsync()
